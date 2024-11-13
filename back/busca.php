@@ -26,7 +26,7 @@ function buscarDisciplina() {
     // dias da semana
 
 
-    //$parametros = " where ";
+    $parametros = " where ";
 
     if($professor){
         $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
@@ -65,5 +65,8 @@ function buscarDisciplina() {
     echo json_encode($dados);
 }
 
-buscarDisciplina();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buscarDisciplina'])) {
+    buscarDisciplina($_POST['idDisciplina']);
+}
+
 ?>

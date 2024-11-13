@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Busca de Disciplina</title>
+    <script>
+        function buscarDisciplina(idDisciplina) {
+            const dados = new FormData();
+            dados.append('buscarDisciplina', 1);
+
+            fetch('busca.php', {
+                method: 'POST',
+                body: dados
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.erro) {
+                    console.log('Erro:', data.erro);
+                    document.getElementById('resultado').textContent = 'Erro: ' + data.erro;
+                } else {
+                    console.log('Disciplina:', data);
+                    document.getElementById('resultado').textContent = 'Disciplina: ' + JSON.stringify(data);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                document.getElementById('resultado').textContent = 'Erro ao conectar-se ao servidor.';
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Teste de Busca de Disciplina</h1>
+    <button onclick="buscarDisciplina(1)">TESTE</button>
+    <p id="resultado"></p>
+</body>
+</html>
