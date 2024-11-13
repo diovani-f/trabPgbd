@@ -12,6 +12,7 @@ Sinc:
 	- curso*
 	- id da disciplina
 	- Nome da disciplina
+   
 	*obrigatorios pra busca.
 	
 - Back faz a busca e retorna os dados em um json
