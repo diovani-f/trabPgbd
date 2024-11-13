@@ -34,5 +34,5 @@ Back:
 - ~~Qrys e arquivo de consulta de disciplina | da tela principal~~ (falta arrumar quando o banco tiver pronto)
 -  Qrys e arquivo de inserção/edição/exclusão/visualização professor
 - Qrys e arquivo de inserção/edição/exclusão/visualizaçãode disciplinas
-- Qrys e arquivo de inserção/edição/exclusão/visualizaçãoprofessor
-- Qrys e arquivo de inserção/edição/exclusão/visualizaçãocurso
+- Qrys e arquivo de inserção/edição/exclusão/visualização professor
+- Qrys e arquivo de inserção/edição/exclusão/visualização curso
