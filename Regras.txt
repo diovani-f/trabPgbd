@@ -1,19 +1,12 @@
 Observação: As que tem o (?) possivelmente não precisam ser implementadas.
 
-- O coordenador pode aumentar ou diminuir a quantidade de vagas de uma disciplina (adiciona matricula/ remove matricula),
-além de poder criar/ remover disciplinas. Mas obviamente apenas do curso o qual coordena.
+- Trigger delete em cascata entre disciplina e aula.
+- Trigger para Salvar o histórico de disciplinas adicionadas e excluídas;
+-  Deve ser possível filtras as disciplinas por código, nome, professor, curso (obrigatório);
 
-- Diminuir o número de vagas, ou seja, adicionar um aluno a turma só é possível caso o numero total de alunos por turma (capacidade da sala)
-não tenha sido atingido;
-
-- Deve ser possível filtras as disciplinas por código, nome ou curso;
-
-- Salvar o histórico de disciplinas adicionadas e excluídas;
-
+Se for implementar isso tem que adicionar mais itens no banco
+- Um coordenador pode ser responsável por um número limitado (provavelmente 1) de cursos ou disciplinas ao mesmo tempo. Antes de associar um coordenador a um curso, o sistema deve verificar quantos cursos o coordenador já está gerenciando.
+- (?) Um professor pode ter um número máximo de aulas em um dia. Exemplo: um professor não pode ter mais do que 4 aulas em um único dia (em termos de horário).
 - (?) Um professor não pode ser atribuído a mais disciplinas do que o número máximo de aulas que ele pode ministrar, com base na carga horária máxima definida. O sistema deve verificar a carga horária total de disciplinas atribuídas a um professor antes de permitir a inserção de uma nova disciplina.
 
-- Um coordenador pode ser responsável por um número limitado (provavelmente 1) de cursos ou disciplinas ao mesmo tempo. Antes de associar um coordenador a um curso, o sistema deve verificar quantos cursos o coordenador já está gerenciando.
 
-- Não é possível agendar duas disciplinas na mesma sala no mesmo horário. Quando um coordenador tenta agendar uma aula em uma sala, o sistema verifica se já há outra disciplina sendo ministrada nesse horário e nessa sala. Caso exista, a operação deve ser impedida.
-
-- (?) Um professor pode ter um número máximo de aulas em um dia. Exemplo: um professor não pode ter mais do que 4 aulas em um único dia (em termos de horário).
