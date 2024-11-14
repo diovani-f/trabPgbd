@@ -1,6 +1,7 @@
 Observação: As que tem o (?) possivelmente não precisam ser implementadas.
 
 - Trigger delete em cascata entre disciplina e aula.
+- Mudar o banco ou criar trigger pra quebrar ligação entre historico e disciplina
 - Trigger para Salvar o histórico de disciplinas adicionadas e excluídas;
 -  Deve ser possível filtras as disciplinas por código, nome, professor, curso (obrigatório);
 
