@@ -7,7 +7,7 @@
     <script>
         function buscarDisciplina(idDisciplina) {
             const dados = new FormData();
-            dados.append('excluirDisciplina', 1);
+            dados.append('editarDisciplina', 1);
 
             fetch('controlador.php', {
                 method: 'POST',
@@ -20,7 +20,7 @@
                     document.getElementById('resultado').textContent = 'Erro: ' + data.erro;
                 } else {
                     console.log('Disciplina:', data);
-                    document.getElementById('resultado').textContent = JSON.stringify(data, null, 2); // Exibe o JSON formatado na página
+                    document.getElementById('resultado').textContent = JSON.stringify(data, null, 2); // Exibe o JSON formatado na pï¿½gina
                 }
             })
             .catch(error => {

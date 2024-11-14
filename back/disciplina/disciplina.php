@@ -60,26 +60,69 @@ function buscaDisciplina() {
 
 //precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
 function excluirDisciplina() {
-    // Vem do JS
-    $id_disciplina = 1; // O ID da disciplina a ser excluída
-    if ($id_disciplina) {
-        $sql = "DELETE FROM disciplina WHERE id = $id_disciplina";
+    $id_disciplina = 1;
 
-        $conn = conectarBanco();
-        
-        if ($conn->query($sql) === TRUE) {
-            $resultado = ['status' => 'sucesso', 'mensagem' => 'Disciplina excluída com sucesso.'];
-        } else {
-            $resultado = ['status' => 'erro', 'mensagem' => 'Erro ao excluir a disciplina: ' . $conn->error];
-        }
-
-        $conn->close();
-
-        file_put_contents('resultado.txt', print_r($resultado, true) . PHP_EOL, FILE_APPEND);
-
-        echo json_encode($resultado);
-    } else {
-        echo json_encode(['status' => 'erro', 'mensagem' => 'ID da disciplina não fornecido.']);
+    if (empty($id_disciplina)) {
+        echo json_encode(["erro" => "ID da disciplina não fornecido"]);
+        return;
     }
+
+    // Monta a consulta SQL de exclusão
+    $sql = "DELETE FROM disciplina WHERE id = ?";
+
+    $conn = conectarBanco();
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bind_param("i", $id_disciplina);
+
+    if ($stmt->execute()) {
+        echo json_encode(["sucesso" => "Disciplina excluída com sucesso"]);
+    } else {
+        echo json_encode(["erro" => "Erro ao excluir a disciplina"]);
+    }
+
+    // Fecha a conexão
+    $stmt->close();
+    $conn->close();
 }
+
+
+function criarDisciplina() {
+    
+    // isso aqui vem do js
+    $nome = 'aaaa';
+    $carga_horaria = 20; 
+    $id_sala = 101;
+    $vagas_disponiveis = 20;
+    $id_professor = 1;
+    $id_curso = 1;
+    
+    if (empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis) || empty($id_professor) || empty($id_curso)) {
+        echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
+        return;
+    }
+
+   $conn = conectarBanco();
+
+   // Substitui valores diretamente na string SQL para depuração
+   $sql = "INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
+           VALUES ('$nome', $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso)";
+
+   // Executa a consulta usando a instrução preparada
+   $stmt = $conn->prepare("INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
+                           VALUES (?, ?, ?, ?, ?, ?)");
+
+   $stmt->bind_param("siisii", $nome, $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso);
+
+   if ($stmt->execute()) {
+       echo json_encode(["sucesso" => "Disciplina criada com sucesso"]);
+   } else {
+       echo json_encode(["erro" => "Erro ao criar a disciplina"]);
+   }
+
+   $stmt->close();
+   $conn->close();
+}
+
+
 ?>
