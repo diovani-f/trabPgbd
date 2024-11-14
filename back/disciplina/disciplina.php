@@ -5,26 +5,21 @@ header('Content-Type: application/json');
 function buscaDisciplina() {
     // Isso vem tudo do js
     // -Obrigatorio-
-    $data_inicio = '10-10-2020';
-    $data_final = '17-10-2020';     //isso compreende uma semana
+    $id_curso = 1; 
     // -Opcional-
     $nome_disciplina = 0;
     $id_disciplina = 0;
     $professor = 0;
-
-    $sql = "select d.iddisciplina, d.nome, p.nome as professor from disciplina d join professor p ON p.idprofessor = d.professor_idprofessor";
     
-    
-    // correto
-    // $sql = "select d.iddisciplina, d.nome, p.nome as professor from disciplina d join professor p ON p.idprofessor = d.professor_idprofessor 
-    // where d.data_inicio < $data_inicio and d.data_fim > $data_fim ";
 
+    $sql = "select d.id as id_disciplina, d.nome as disciplina, p.nome as professor, a.dia_da_semana, a.horario_inicio, a.horario_fim , s.numero AS sala
+            from disciplina d 
+            join professor p ON p.id = d.id_professor
+            join aula a ON a.id_disciplina = d.id
+            join sala s ON s.numero = d.id_sala
+            join curso c ON c.id = d.id_curso";
 
-    //data de inicio e fim pesquisada, tem que estar dentro a data_inicio e fim do banco
-    // dias da semana
-
-
-    $parametros = " where ";
+    $parametros = " where c.id = " .$id_curso;
 
     if($professor){
         $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
@@ -38,7 +33,7 @@ function buscaDisciplina() {
         $parametros .= " and d.nome like '" . utf8_decode($nome_disciplina) . "%'";
     }
 
-    // $sql .= $parametros;    
+    $sql .= $parametros;    
 
     $conn = conectarBanco();
     $stmt = $conn->prepare($sql);
@@ -61,5 +56,30 @@ function buscaDisciplina() {
     $conn->close();
 
     echo json_encode($dados);
+}
+
+//precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
+function excluirDisciplina() {
+    // Vem do JS
+    $id_disciplina = 1; // O ID da disciplina a ser excluída
+    if ($id_disciplina) {
+        $sql = "DELETE FROM disciplina WHERE id = $id_disciplina";
+
+        $conn = conectarBanco();
+        
+        if ($conn->query($sql) === TRUE) {
+            $resultado = ['status' => 'sucesso', 'mensagem' => 'Disciplina excluída com sucesso.'];
+        } else {
+            $resultado = ['status' => 'erro', 'mensagem' => 'Erro ao excluir a disciplina: ' . $conn->error];
+        }
+
+        $conn->close();
+
+        file_put_contents('resultado.txt', print_r($resultado, true) . PHP_EOL, FILE_APPEND);
+
+        echo json_encode($resultado);
+    } else {
+        echo json_encode(['status' => 'erro', 'mensagem' => 'ID da disciplina não fornecido.']);
+    }
 }
 ?>

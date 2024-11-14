@@ -4,7 +4,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "mydb";
+$dbname = "oferta";
 
 function conectarBanco() {
     global $servername, $username, $password, $dbname;

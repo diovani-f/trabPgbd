@@ -28,11 +28,12 @@
     }
 
     function editaProfessor(){
-
-
-    }
+    };
 
     function excluiProfessor(){
+    };
 
-    }
+    function inserirProfessor(){
+
+    };
 ?>
