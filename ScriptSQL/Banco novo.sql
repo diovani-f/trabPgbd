@@ -49,8 +49,6 @@ CREATE TABLE historico_disciplinas (
     id_disciplina INT NOT NULL,
     acao ENUM('inserção', 'remoção') NOT NULL,
     data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_coordenador) REFERENCES professor(id),
-    FOREIGN KEY (id_disciplina) REFERENCES disciplina(id)
 );
 
 -- Tabela que guarda os horários e dias que cada aula de uma determinada disciplina é ministrada
@@ -63,7 +61,7 @@ CREATE TABLE aula (
     FOREIGN KEY (id_disciplina) REFERENCES disciplina(id)
 );
 
-ALTER TABLE historico_disciplinas DROP FOREIGN KEY historico_disciplinas_ibfk_2;
+
 
 
 
