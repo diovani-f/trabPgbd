@@ -2,9 +2,10 @@
     
     header('Content-Type: application/json');
     
-    function buscaProfessor(){
+    function buscarProfessor(){
         
-        $sql = "SELECT * FROM Professor";
+        
+        $sql = "SELECT * FROM professor";
         $conn = conectarBanco();    
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -20,20 +21,98 @@
                 $dados[] = $row;
             }
         }
+
+
     
         $stmt->close();
         $conn->close();
+
+        file_put_contents("yyyyyy.txt" ,json_encode($dados));
     
         echo json_encode($dados);
     }
+    function criarProfessor() {
+        // Substituir pelo valor enviado pelo JS
+        $nome = 'Novo Professor'; 
+        $email = 'professor@email.com';
+        $coordenador = false;
+    
+        if (empty($nome) || empty($email)) {
+            echo json_encode(["erro" => "Nome e email são obrigatórios"]);
+            return;
+        }
+    
+        $conn = conectarBanco();
+        $sql = "INSERT INTO professor (nome, email, coordenador) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssi", $nome, $email, $coordenador);
+    
+        if ($stmt->execute()) {
+            echo json_encode(["sucesso" => "Professor criado com sucesso"]);
+        } else {
+            echo json_encode(["erro" => "Erro ao criar professor: " . $stmt->error]);
+        }
+    
+        $stmt->close();
+        $conn->close();
+    }
 
-    function editaProfessor(){
-    };
+    function excluirProfessor() {
+        // professor nao pode ser coordenador de um curso
+        // nao pode estar em uma disciplina
 
-    function excluiProfessor(){
-    };
+        $id = 1;
+    
+        if (empty($id)) {
+            echo json_encode(["erro" => "ID do professor é obrigatório"]);
+            return;
+        }
 
-    function inserirProfessor(){
+        $conn = conectarBanco();
+        
+        $sql = "DELETE FROM professor WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
 
-    };
+        
+
+    
+        if ($stmt->execute()) {
+            echo json_encode(["sucesso" => "Professor excluído com sucesso"]);
+        } else {
+            echo json_encode(["erro" => "Erro ao excluir professor: " . $stmt->error]);
+        }
+
+
+        $stmt->close();
+        $conn->close();
+    }
+
+function editarProfessor() {
+    // Substituir pelo valor enviado pelo JS
+    $id = 3; 
+    $nome = 'Professor Editado'; 
+    $email = 'editado@email.com';
+    $coordenador = false;
+
+    if (empty($id) || empty($nome) || empty($email)) {
+        echo json_encode(["erro" => "ID, nome e email são obrigatórios"]);
+        return;
+    }
+
+    $conn = conectarBanco();
+    $sql = "UPDATE professor SET nome = ?, email = ?, coordenador = ? WHERE id = ?";
+    file_put_contents("sssss.txt", $sql );
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssii", $nome, $email, $coordenador, $id);
+
+    if ($stmt->execute()) {
+        echo json_encode(["sucesso" => "Professor editado com sucesso"]);
+    } else {
+        echo json_encode(["erro" => "Erro ao editar professor: " . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conn->close();
+}
 ?>

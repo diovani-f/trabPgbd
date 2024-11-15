@@ -7,7 +7,7 @@
     <script>
         function buscarDisciplina(idDisciplina) {
             const dados = new FormData();
-            dados.append('editarDisciplina', 1);
+            dados.append('buscarSala', 1);
 
             fetch('controlador.php', {
                 method: 'POST',
@@ -16,15 +16,12 @@
             .then(response => response.json())
             .then(data => {
                 if (data.erro) {
-                    console.log('Erro:', data.erro);
                     document.getElementById('resultado').textContent = 'Erro: ' + data.erro;
                 } else {
-                    console.log('Disciplina:', data);
                     document.getElementById('resultado').textContent = JSON.stringify(data, null, 2); // Exibe o JSON formatado na p�gina
                 }
             })
             .catch(error => {
-                console.error('Erro:', error);
                 document.getElementById('resultado').textContent = 'Erro ao conectar-se ao servidor.';
             });
         }

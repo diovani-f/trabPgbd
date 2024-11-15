@@ -3,35 +3,37 @@
 
     include_once 'professor/professor.php';
     include_once 'disciplina/disciplina.php';
+    include_once 'curso/curso.php';
+    include_once 'sala/sala.php';
 
-    $resultado = '';
 
-    if(isset($_POST['buscaDisciplina'])){
-        $resultado = buscaDisciplina();
-    }
+    $acoes = [
+        'buscarDisciplina'    => 'buscarDisciplina',
+        'excluirDisciplina'  => 'excluirDisciplina',
+        'criarDisciplina'    => 'criarDisciplina',
+        'editarDisciplina'   => 'editarDisciplina',
 
-    if(isset($_POST['excluirDisciplina'])){
-        $resultado = excluirDisciplina();
-    }
+        'buscarProfessor'     => 'buscarProfessor',
+        'editarProfessor'     => 'editarProfessor',
+        'excluirProfessor'    => 'excluirProfessor',
+        'criarProfessor'     => 'criarProfessor',
 
-    if(isset($_POST['criarDisciplina'])){
-        $resultado = criarDisciplina();
-    }
+        'buscarCurso'     => 'buscarCurso',
+        'editarCurso'     => 'editarCurso',
+        'excluirCurso'    => 'excluirCurso',
+        'criarCurso'     => 'criarCurso',
 
-    if(isset($_POST['editarDisciplina'])){
-        $resultado = editarDisciplina();
-    }
-
-    if(isset($_POST['buscaProfessor'])){
-        $resultado = buscaProfessor();
-    }
-
-    if(isset($_POST['editaProfessor'])){
-        $resultado = editaProfessor();
-    }
-
-    if(isset($_POST['excluiProfessor'])){
-        $resultado = excluiProfessor();
+        'buscarSala'     => 'buscarSala',
+        'editarSala'     => 'editarSala',
+        'excluirSala'    => 'excluirSala',
+        'criarSala'     => 'criarSala',
+    ];
+    
+    foreach ($acoes as $chave => $funcao) {
+        if (isset($_POST[$chave])) {
+            $resultado = $funcao();
+            break; 
+        }
     }
 
     echo $resultado;

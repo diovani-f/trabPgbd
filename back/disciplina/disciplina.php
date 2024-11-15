@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 
-function buscaDisciplina() {
+function buscarDisciplina() {
     // Isso vem tudo do js
     // -Obrigatorio-
     $id_curso = 1; 
@@ -39,6 +39,7 @@ function buscaDisciplina() {
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $resultado = $stmt->get_result();
+
 
     // Inicializa um array para armazenar os dados
     $dados = [];
@@ -88,7 +89,6 @@ function excluirDisciplina() {
 
 
 function criarDisciplina() {
-    
     // isso aqui vem do js
     $nome = 'aaaa';
     $carga_horaria = 20; 
@@ -104,11 +104,10 @@ function criarDisciplina() {
 
    $conn = conectarBanco();
 
-   // Substitui valores diretamente na string SQL para depuração
+   //para depuração
    $sql = "INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
            VALUES ('$nome', $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso)";
 
-   // Executa a consulta usando a instrução preparada
    $stmt = $conn->prepare("INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
                            VALUES (?, ?, ?, ?, ?, ?)");
 
@@ -122,6 +121,71 @@ function criarDisciplina() {
 
    $stmt->close();
    $conn->close();
+}
+
+function editarDisciplina() {
+$nome = 'aaaa';
+    $carga_horaria = 20; 
+    $id_sala = 101;
+    $vagas_disponiveis = 20;
+    $id_professor = 1;
+    $id_curso = 1;
+    $id_disciplina = 1;
+
+
+
+    if (empty($id_disciplina) || empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis) || empty($id_professor) || empty($id_curso)) {
+        echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
+        return;
+    }
+
+    // Conectar ao banco
+    $conn = conectarBanco();
+    if ($conn->connect_error) {
+        echo json_encode(["erro" => "Falha na conexão com o banco de dados: " . $conn->connect_error]);
+        return;
+    }
+
+    // SQL para depuração
+    $sql_debug = "UPDATE disciplina SET 
+                    nome = '$nome',
+                    carga_horaria = $carga_horaria,
+                    id_sala = $id_sala,
+                    vagas_disponiveis = $vagas_disponiveis,
+                    id_professor = $id_professor,
+                    id_curso = $id_curso
+                  WHERE id = $id_disciplina";
+    
+    // Preparar a query com parâmetros
+    $stmt = $conn->prepare("UPDATE disciplina SET 
+                                nome = ?, 
+                                carga_horaria = ?, 
+                                id_sala = ?, 
+                                vagas_disponiveis = ?, 
+                                id_professor = ?, 
+                                id_curso = ? 
+                            WHERE id = ?");
+    if (!$stmt) {
+        echo json_encode(["erro" => "Erro ao preparar a query: " . $conn->error]);
+        return;
+    }
+
+    $stmt->bind_param("siisiii", $nome, $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso, $id_disciplina);
+
+    // Executar a query
+    if ($stmt->execute()) {
+        echo json_encode(["sucesso" => "Disciplina editada com sucesso"]);
+    } else {
+        // Exibir mensagem de erro e SQL de depuração
+        echo json_encode([
+            "erro" => "Erro ao editar a disciplina: " . $stmt->error,
+            "sql" => $sql_debug
+        ]);
+    }
+
+    // Fechar conexão
+    $stmt->close();
+    $conn->close();
 }
 
 
