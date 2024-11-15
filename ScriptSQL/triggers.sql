@@ -2,7 +2,7 @@
 DELIMITER //
 
 CREATE TRIGGER delete_aulas_on_disciplina_delete
-AFTER DELETE ON disciplina
+BEFORE DELETE ON disciplina
 FOR EACH ROW
 BEGIN
     DELETE FROM aula
