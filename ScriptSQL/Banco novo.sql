@@ -63,5 +63,8 @@ CREATE TABLE aula (
     FOREIGN KEY (id_disciplina) REFERENCES disciplina(id)
 );
 
+ALTER TABLE historico_disciplinas DROP FOREIGN KEY historico_disciplinas_ibfk_2;
+
+
 
 
