@@ -2,14 +2,14 @@
 header('Content-Type: application/json');
 
 
-function buscarDisciplina() {
+function buscarDisciplina($parametro = 0) {
     // Isso vem tudo do js
     // -Obrigatorio-
-    $id_curso = 1; 
+    $id_curso = $parametro["id_curso"]; 
     // -Opcional-
-    $nome_disciplina = 0;
-    $id_disciplina = 0;
-    $professor = 0;
+    $nome_disciplina = $parametro["nome_disciplina"];
+    $id_disciplina = $parametro["id_disciplina"];
+    $professor = $parametro["nome_professor"];
     
 
     $sql = "select d.id as id_disciplina, d.nome as disciplina, p.nome as professor, a.dia_da_semana, a.horario_inicio, a.horario_fim , s.numero AS sala
@@ -60,8 +60,8 @@ function buscarDisciplina() {
 }
 
 //precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
-function excluirDisciplina() {
-    $id_disciplina = 1;
+function excluirDisciplina($parametro = 0) {
+    $id_disciplina = $parametro["id_disciplina"];
 
     if (empty($id_disciplina)) {
         echo json_encode(["erro" => "ID da disciplina não fornecido"]);
@@ -88,14 +88,13 @@ function excluirDisciplina() {
 }
 
 
-function criarDisciplina() {
-    // isso aqui vem do js
-    $nome = 'aaaa';
-    $carga_horaria = 20; 
-    $id_sala = 101;
-    $vagas_disponiveis = 20;
-    $id_professor = 1;
-    $id_curso = 1;
+function criarDisciplina($parametro = 0) {
+    $nome = $parametro["nome_disciplina"];
+    $carga_horaria = $parametro["carga_horaria"]; 
+    $id_sala = $parametro["id_sala"];
+    $vagas_disponiveis = $parametro["vagas_disponiveis"];
+    $id_professor = $parametro["id_professor"];
+    $id_curso = $parametro["id_curso"];
     
     if (empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis) || empty($id_professor) || empty($id_curso)) {
         echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
@@ -123,15 +122,15 @@ function criarDisciplina() {
    $conn->close();
 }
 
-function editarDisciplina() {
-$nome = 'aaaa';
-    $carga_horaria = 20; 
-    $id_sala = 101;
-    $vagas_disponiveis = 20;
-    $id_professor = 1;
-    $id_curso = 1;
-    $id_disciplina = 1;
+function editarDisciplina($parametro = 0) {
 
+    $nome = $parametro["nome_disciplina"];
+    $carga_horaria = $parametro["carga_horaria"]; 
+    $id_sala = $parametro["id_sala"];
+    $vagas_disponiveis = $parametro["vagas_disponiveis"];
+    $id_professor = $parametro["id_professor"];
+    $id_curso = $parametro["id_curso"];
+    $id_disciplina = $parametro["id_disciplina"];
 
 
     if (empty($id_disciplina) || empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis) || empty($id_professor) || empty($id_curso)) {

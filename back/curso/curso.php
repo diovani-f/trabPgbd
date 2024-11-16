@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json');
-function buscarCurso(){
-        
+function buscarCurso($parametro = 0){
     $sql = "SELECT * FROM curso";
     $conn = conectarBanco();    
     $stmt = $conn->prepare($sql);
@@ -24,9 +23,9 @@ function buscarCurso(){
 
     echo json_encode($dados);
 }
-function criarCurso() {
-    $nome = 'Novo Curso'; // Substituir pelo valor enviado pelo JS
-    $id_coordenador = 3; 
+function criarCurso($parametro = 0) {
+    $nome = $parametro['nome_curso'];
+    $id_coordenador = $parametro['id_coordenador'];; 
 
     if (empty($nome) || empty($id_coordenador)) {
         echo json_encode(["erro" => "Nome e coordenador são obrigatórios"]);
@@ -49,10 +48,10 @@ function criarCurso() {
 }
 
 // Função para editar um curso
-function editarCurso() {
-    $id = 1;
-    $nome = 'Curso Editado';
-    $id_coordenador = 3;
+function editarCurso($parametro = 0) {
+    $id = $parametro["id_curso"];
+    $nome = $parametro["nome_curso"];
+    $id_coordenador = $parametro["id_coordenador"];
 
     if (empty($id) || empty($nome) || empty($id_coordenador)) {
         echo json_encode(["erro" => "ID, nome e coordenador são obrigatórios"]);
@@ -75,9 +74,10 @@ function editarCurso() {
 }
 
 // Função para excluir um curso
-function excluirCurso() {
+function excluirCurso($parametro = 0) {
     //curso nao pode ter uma disciplina cadastrada
-    $id = 2; // Substituir pelo valor enviado pelo JS
+    $id = $parametro["id_curso"];
+    
 
     if (empty($id)) {
         echo json_encode(["erro" => "ID do curso é obrigatório"]);

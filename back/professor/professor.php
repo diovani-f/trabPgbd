@@ -2,7 +2,7 @@
     
     header('Content-Type: application/json');
     
-    function buscarProfessor(){
+    function buscarProfessor($parametro = 0){
         
         
         $sql = "SELECT * FROM professor";
@@ -31,11 +31,11 @@
     
         echo json_encode($dados);
     }
-    function criarProfessor() {
-        // Substituir pelo valor enviado pelo JS
-        $nome = 'Novo Professor'; 
-        $email = 'professor@email.com';
-        $coordenador = false;
+    function criarProfessor($parametro = 0) {
+        
+        $nome = $parametro["nome_professor"]; 
+        $email = $parametro["email_professor"]; 
+        $coordenador = $parametro["coordenador"];
     
         if (empty($nome) || empty($email)) {
             echo json_encode(["erro" => "Nome e email são obrigatórios"]);
@@ -57,11 +57,10 @@
         $conn->close();
     }
 
-    function excluirProfessor() {
+    function excluirProfessor($parametro = 0) {
         // professor nao pode ser coordenador de um curso
         // nao pode estar em uma disciplina
-
-        $id = 1;
+        $id = $parametro["id_professor"]; 
     
         if (empty($id)) {
             echo json_encode(["erro" => "ID do professor é obrigatório"]);
@@ -88,12 +87,11 @@
         $conn->close();
     }
 
-function editarProfessor() {
-    // Substituir pelo valor enviado pelo JS
-    $id = 3; 
-    $nome = 'Professor Editado'; 
-    $email = 'editado@email.com';
-    $coordenador = false;
+    function editarProfessor($parametro = 0) {
+    $id = $parametro["id_professor"]; 
+    $nome = $parametro["nome_professor"]; 
+    $email = $parametro["email_professor"]; 
+    $coordenador = $parametro["coordenador"];
 
     if (empty($id) || empty($nome) || empty($email)) {
         echo json_encode(["erro" => "ID, nome e email são obrigatórios"]);
