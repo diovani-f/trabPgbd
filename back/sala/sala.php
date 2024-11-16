@@ -2,10 +2,9 @@
 
     header('Content-Type: application/json');
 
-    function criarSala() {
-        // Dados que chegam via JavaScript
-        $numero = 119; 
-        $capacidade = 30; 
+    function criarSala($parametro = 0) {
+        $numero = $parametro['numero_sala']; 
+        $capacidade = $parametro['capacidade'];
 
         if (empty($numero) || empty($capacidade)) {
             echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
@@ -29,10 +28,9 @@
 
     
 
-function editarSala() {
-    // Dados que chegam via JavaScript
-    $numero = 101; 
-    $capacidade = 40; 
+function editarSala($parametro = 0) {
+        $numero = $parametro['numero_sala']; 
+        $capacidade = $parametro['capacidade'];
 
     if (empty($numero) || empty($capacidade)) {
         echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
@@ -57,9 +55,9 @@ function editarSala() {
     $conn->close();
 }
 
-function excluirSala() {
-    $numero = 118;  // Número da sala a ser excluída
-
+function excluirSala($parametro = 0) {
+    $numero = $parametro['numero_sala'];
+    
     if (empty($numero)) {
         echo json_encode(["erro" => "Número da sala não fornecido"]);
         return;
@@ -84,9 +82,7 @@ function excluirSala() {
     $conn->close();
 }
 
-function buscarSala(){
-        
-        
+function buscarSala($parametro = 0){
     $sql = "SELECT * FROM sala";
     $conn = conectarBanco();    
     $stmt = $conn->prepare($sql);

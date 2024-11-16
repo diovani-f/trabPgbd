@@ -28,10 +28,10 @@
         'excluirSala'    => 'excluirSala',
         'criarSala'     => 'criarSala',
     ];
-    
+
     foreach ($acoes as $chave => $funcao) {
         if (isset($_POST[$chave])) {
-            $resultado = $funcao();
+            $resultado = $funcao($_POST);
             break; 
         }
     }

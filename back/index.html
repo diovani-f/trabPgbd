@@ -7,7 +7,16 @@
     <script>
         function buscarDisciplina(idDisciplina) {
             const dados = new FormData();
-            dados.append('buscarSala', 1);
+            
+            //exemplo de como enviar os dados
+            // dados.append('criarCurso', 1);
+            // dados.append('nome_curso', "zzzzzzz");
+            // dados.append('id_coordenador', 3);
+
+            // dados.append('editarCurso', 1);
+            // dados.append('id_curso', 1);
+            // dados.append('nome_curso', "aaasdasd");
+            // dados.append('id_coordenador', 3);
 
             fetch('controlador.php', {
                 method: 'POST',
