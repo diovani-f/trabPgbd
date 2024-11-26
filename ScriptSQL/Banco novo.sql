@@ -7,7 +7,6 @@ CREATE TABLE professor (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
-    coordenador BOOLEAN DEFAULT FALSE
 );
 
 -- Criação da tabela curso
