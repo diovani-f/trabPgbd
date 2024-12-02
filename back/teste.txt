@@ -1,0 +1,2 @@
+{"erro":"O professor n\u00e3o pode ser excluido porque \u00e9 coordenador de um curso."}
+{"erro":"O professor n\u00e3o pode ser excluido porque \u00e9 coordenador de um curso."}
