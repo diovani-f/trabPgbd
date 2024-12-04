@@ -2,27 +2,32 @@
 header('Content-Type: application/json');
 include_once 'conexao.php';
 
-
 function buscarDisciplina($parametro = 0) {
     // Isso vem tudo do js
     // -Obrigatorio-
-    // $id_curso = $parametro["id_curso"]; 
-    // $data_inicio = "2024-01-15";
-    // $data_final = "2024-01-21";
+    $id_curso = $parametro["id_curso"];
+    $data_inicio = "2024-01-16";
+    $data_final = "2024-01-22";
     // // -Opcional-
     // $nome_disciplina = $parametro["nome_disciplina"];
     // $id_disciplina = $parametro["id_disciplina"];
     // $professor = $parametro["nome_professor"];
     
 
-    $sql = "select d.id as id_disciplina, d.nome as disciplina, p.nome as professor, a.dia_da_semana, a.horario_inicio, a.horario_fim , s.numero AS sala
+    $sql = "select 
+            d.id as id_disciplina, 
+            d.nome as disciplina, 
+            p.nome as professor, 
+            a.dia_da_semana, 
+            a.horario_inicio, 
+            a.horario_fim , 
+            s.numero AS sala
             from disciplina d 
             join professor p ON p.id = d.id_professor
             join aula a ON a.id_disciplina = d.id
             join sala s ON s.numero = d.id_sala
-            join curso c ON c.id = d.id_curso where c.id = 1";
-
-    // $parametros = " where c.id = " .$id_curso;
+            join curso c ON c.id = d.id_curso 
+            where c.id = $id_curso and a.data_inicio <= '$data_inicio' and a.data_final >= '$data_final'";
 
     // if($professor){
     //     $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
@@ -36,7 +41,7 @@ function buscarDisciplina($parametro = 0) {
     //     $parametros .= " and d.nome like '" . utf8_decode($nome_disciplina) . "%'";
     // }
 
-    // $sql .= $parametros;    
+    // $sql = $sql . $parametros;    
 
     
         $conn = conectarBanco();    
