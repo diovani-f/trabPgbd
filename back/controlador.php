@@ -29,12 +29,17 @@
         'criarSala'     => 'criarSala',
     ];
 
+    $resultado = "";
+
     foreach ($acoes as $chave => $funcao) {
         if (isset($_POST[$chave])) {
             $resultado = $funcao($_POST);
             break; 
         }
     }
+
+    file_put_contents('resultado.txt',print_r($resultado, true) . PHP_EOL ,FILE_APPEND);
+
 
     echo $resultado;
 ?>

@@ -1,0 +1,37 @@
+Array
+(
+    [0] => Array
+        (
+            [id_disciplina] => 1
+            [disciplina] => Programação Orientada a Objetos
+            [professor] => João Silva
+            [dia_da_semana] => Segunda
+            [horario_inicio] => 08:00:00
+            [horario_fim] => 10:00:00
+            [sala] => 101
+        )
+
+    [1] => Array
+        (
+            [id_disciplina] => 1
+            [disciplina] => Programação Orientada a Objetos
+            [professor] => João Silva
+            [dia_da_semana] => Quarta
+            [horario_inicio] => 08:00:00
+            [horario_fim] => 10:00:00
+            [sala] => 101
+        )
+
+    [2] => Array
+        (
+            [id_disciplina] => 2
+            [disciplina] => Banco de Dados
+            [professor] => Maria Oliveira
+            [dia_da_semana] => Terça
+            [horario_inicio] => 14:00:00
+            [horario_fim] => 16:00:00
+            [sala] => 102
+        )
+
+)
+

@@ -1,15 +1,18 @@
 <?php
 header('Content-Type: application/json');
+include_once 'conexao.php';
 
 
 function buscarDisciplina($parametro = 0) {
     // Isso vem tudo do js
     // -Obrigatorio-
-    $id_curso = $parametro["id_curso"]; 
-    // -Opcional-
-    $nome_disciplina = $parametro["nome_disciplina"];
-    $id_disciplina = $parametro["id_disciplina"];
-    $professor = $parametro["nome_professor"];
+    // $id_curso = $parametro["id_curso"]; 
+    // $data_inicio = "2024-01-15";
+    // $data_final = "2024-01-21";
+    // // -Opcional-
+    // $nome_disciplina = $parametro["nome_disciplina"];
+    // $id_disciplina = $parametro["id_disciplina"];
+    // $professor = $parametro["nome_professor"];
     
 
     $sql = "select d.id as id_disciplina, d.nome as disciplina, p.nome as professor, a.dia_da_semana, a.horario_inicio, a.horario_fim , s.numero AS sala
@@ -17,46 +20,46 @@ function buscarDisciplina($parametro = 0) {
             join professor p ON p.id = d.id_professor
             join aula a ON a.id_disciplina = d.id
             join sala s ON s.numero = d.id_sala
-            join curso c ON c.id = d.id_curso";
+            join curso c ON c.id = d.id_curso where c.id = 1";
 
-    $parametros = " where c.id = " .$id_curso;
+    // $parametros = " where c.id = " .$id_curso;
 
-    if($professor){
-        $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
-    }
+    // if($professor){
+    //     $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
+    // }
 
-    if($id_disciplina){
-        $parametros .= " and d.iddisciplina = " . $id_disciplina;
-    }
+    // if($id_disciplina){
+    //     $parametros .= " and d.iddisciplina = " . $id_disciplina;
+    // }
 
-    if($nome_disciplina){
-        $parametros .= " and d.nome like '" . utf8_decode($nome_disciplina) . "%'";
-    }
+    // if($nome_disciplina){
+    //     $parametros .= " and d.nome like '" . utf8_decode($nome_disciplina) . "%'";
+    // }
 
-    $sql .= $parametros;    
+    // $sql .= $parametros;    
 
-    $conn = conectarBanco();
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-
-
-    // Inicializa um array para armazenar os dados
-    $dados = [];
-
-    if ($resultado->num_rows > 0) {
-        while ($row = $resultado->fetch_assoc()) {
-            foreach ($row as $key => $value) {
-                $row[$key] = utf8_encode($value);
+    
+        $conn = conectarBanco();    
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+    
+        $dados = [];
+    
+        if ($resultado->num_rows > 0) {
+            while ($row = $resultado->fetch_assoc()) {
+                foreach ($row as $key => $value) {
+                    $row[$key] = utf8_encode($value);
+                }
+                $dados[] = $row;
             }
-            $dados[] = $row;
         }
-    }
 
-    $stmt->close();
-    $conn->close();
+        $stmt->close();
+        $conn->close();
 
-    echo json_encode($dados);
+    
+        echo json_encode($dados);
 }
 
 //precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
@@ -185,7 +188,4 @@ function editarDisciplina($parametro = 0) {
     // Fechar conexão
     $stmt->close();
     $conn->close();
-}
-
-
-?>
+}?>
