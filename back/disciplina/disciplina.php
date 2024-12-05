@@ -6,14 +6,27 @@ function buscarDisciplina($parametro = 0) {
     // Isso vem tudo do js
     // -Obrigatorio-
     $id_curso = $parametro["id_curso"];
-    $data_inicio = "2024-01-16";
-    $data_final = "2024-01-22";
+    $data_inicio = $parametro["data_inicio"];
+    $data_final = $parametro["data_final"];
+
     // // -Opcional-
-    // $nome_disciplina = $parametro["nome_disciplina"];
-    // $id_disciplina = $parametro["id_disciplina"];
-    // $professor = $parametro["nome_professor"];
+    if(!empty($parametro["nome_professor"]))
+        $professor = " and p.nome like '" . $parametro["nome_professor"] . "%'";
+    else
+        $professor = "";
     
 
+    if(!empty($parametro["id_disciplina"]))
+        $id_disciplina = " and d.id = " . $parametro["id_disciplina"];
+    else
+        $id_disciplina = "";
+
+
+    if(!empty($parametro["nome_disciplina"]))
+        $nome_disciplina = " and d.nome like '" . $parametro["nome_disciplina"] . "%'";
+    else
+        $nome_disciplina = "";
+    
     $sql = "select 
             d.id as id_disciplina, 
             d.nome as disciplina, 
@@ -27,23 +40,15 @@ function buscarDisciplina($parametro = 0) {
             join aula a ON a.id_disciplina = d.id
             join sala s ON s.numero = d.id_sala
             join curso c ON c.id = d.id_curso 
-            where c.id = $id_curso and a.data_inicio <= '$data_inicio' and a.data_final >= '$data_final'";
-
-    // if($professor){
-    //     $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
-    // }
-
-    // if($id_disciplina){
-    //     $parametros .= " and d.iddisciplina = " . $id_disciplina;
-    // }
-
-    // if($nome_disciplina){
-    //     $parametros .= " and d.nome like '" . utf8_decode($nome_disciplina) . "%'";
-    // }
-
-    // $sql = $sql . $parametros;    
-
+            where 
+            c.id = $id_curso 
+            and a.data_inicio <= '$data_inicio' 
+            and a.data_final >= '$data_final'
+            $professor
+            $id_disciplina
+            $nome_disciplina";
     
+
         $conn = conectarBanco();    
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -54,7 +59,104 @@ function buscarDisciplina($parametro = 0) {
         if ($resultado->num_rows > 0) {
             while ($row = $resultado->fetch_assoc()) {
                 foreach ($row as $key => $value) {
-                    $row[$key] = utf8_encode($value);
+                    $row[$key] = ($value);
+                }
+                $dados[] = $row;
+            }
+        }
+        
+        foreach ($dados as $index => $item) {
+            $dados[$index]['dia_semana'] = buscardiadasemana($data_inicio, $data_final, $item['dia_da_semana']);
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        echo json_encode($dados);
+}
+
+function buscardiadasemana($dataInicio, $dataFim, $diaSemanaDesejado){
+    // Mapear dias da semana de inglês para português
+    $diasSemana = [
+        'Monday'    => 'Segunda',
+        'Tuesday'   => 'Terça',
+        'Wednesday' => 'Quarta',
+        'Thursday'  => 'Quinta',
+        'Friday'    => 'Sexta',
+        'Saturday'  => 'Sábado',
+        'Sunday'    => 'Domingo',
+    ];
+
+    // Converter para DateTime
+    $inicio = new DateTime($dataInicio);
+    $fim = new DateTime($dataFim);
+
+    // Iterar sobre o intervalo
+    $periodo = new DatePeriod($inicio, new DateInterval('P1D'), $fim);    
+
+    foreach ($periodo as $data) {
+        $diaSemanaAtual = $diasSemana[$data->format('l')]; // Traduz para português
+        if ($diaSemanaAtual === $diaSemanaDesejado) {
+            return $data->format('Y-m-d');
+        }
+    }
+
+}
+
+function buscarDisciplina_listagem($parametro = []) {
+    // Isso vem tudo do js
+    // -Obrigatorio-
+    $id_curso = $parametro["id_curso"];
+
+
+    // // -Opcional-
+    if(!empty($parametro["nome_professor"]))
+        $professor = " and p.nome like '" . $parametro["nome_professor"] . "%'";
+    else
+        $professor = "";
+    
+    if(!empty($parametro["id_disciplina"]))
+        $id_disciplina = " and d.id = " . $parametro["id_disciplina"];
+    else
+        $id_disciplina = "";
+
+
+    if(!empty($parametro["nome_disciplina"]))
+        $nome_disciplina = " and d.nome like '" . $parametro["nome_disciplina"] . "%'";
+    else
+        $nome_disciplina = "";
+    
+    $sql = "select 
+            d.id as id_disciplina, 
+            d.nome as disciplina, 
+            p.nome as professor, 
+            a.dia_da_semana, 
+            a.horario_inicio, 
+            a.horario_fim , 
+            s.numero AS sala
+            from disciplina d 
+            join professor p ON p.id = d.id_professor
+            join aula a ON a.id_disciplina = d.id
+            join sala s ON s.numero = d.id_sala
+            join curso c ON c.id = d.id_curso 
+            where 
+            c.id = $id_curso 
+            $professor
+            $id_disciplina
+            $nome_disciplina";
+    
+
+        $conn = conectarBanco();    
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+    
+        $dados = [];
+    
+        if ($resultado->num_rows > 0) {
+            while ($row = $resultado->fetch_assoc()) {
+                foreach ($row as $key => $value) {
+                    $row[$key] = ($value);
                 }
                 $dados[] = $row;
             }
@@ -63,9 +165,11 @@ function buscarDisciplina($parametro = 0) {
         $stmt->close();
         $conn->close();
 
-    
         echo json_encode($dados);
 }
+
+
+
 
 //precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
 function excluirDisciplina($parametro = 0) {

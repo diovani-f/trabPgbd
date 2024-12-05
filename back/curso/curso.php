@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json');
+
 function buscarCurso($parametro = 0){
     $sql = "SELECT * FROM curso";
     $conn = conectarBanco();    
@@ -25,7 +26,7 @@ function buscarCurso($parametro = 0){
 }
 function criarCurso($parametro = 0) {
     $nome = $parametro['nome_curso'];
-    $id_coordenador = $parametro['id_coordenador'];; 
+    $id_coordenador = $parametro['id_coordenador'];
 
     if (empty($nome) || empty($id_coordenador)) {
         echo json_encode(["erro" => "Nome e coordenador são obrigatórios"]);

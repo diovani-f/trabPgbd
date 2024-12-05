@@ -8,10 +8,10 @@
         function buscarDisciplina(idDisciplina) {
             const dados = new FormData();
             
-            //exemplo de como enviar os dados
+            // exemplo de como enviar os dados
             // dados.append('criarCurso', 1);
             // dados.append('nome_curso', "zzzzzzz");
-            // dados.append('id_coordenador', 3);
+            // dados.append('id_coordenador', 4);
 
             // dados.append('editarCurso', 1);
             // dados.append('id_curso', 1);
@@ -19,25 +19,41 @@
             // dados.append('id_coordenador', 3);
             
 
+            // //obrigatorio
              dados.append('buscarDisciplina', 1);
              dados.append('id_curso', 1);
+             dados.append('data_inicio', "2024-02-12");
+             dados.append('data_final', "2024-02-19");
+            //  opcional
+             dados.append('id_disciplina', 1);
+             dados.append('nome_professor', "João Silva");
+             dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
 
+            // listagem para a pagina de edição
+            //  //obrigatorio
+            //  dados.append('buscarDisciplina_listagem', 1);
+            //  dados.append('id_curso', 1);
+            //  //  opcional
+            //  dados.append('id_disciplina', 1);
+            //  dados.append('nome_professor', "João Silva");
+            //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
 
-            fetch('controlador.php', {
+             fetch('controlador.php', {
                 method: 'POST',
                 body: dados
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.erro) {
-                    document.getElementById('resultado').textContent = 'Erro: ' + data.erro;
-                } else {
-                    document.getElementById('resultado').textContent = JSON.stringify(data, null, 2); // Exibe o JSON formatado na p�gina
-                }
-            })
-            .catch(error => {
-                document.getElementById('resultado').textContent = 'Erro ao conectar-se ao servidor.';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    const resultado = document.getElementById('resultado');
+                    if (data.erro) {
+                        resultado.textContent = 'Erro: ' + data.erro;
+                    } else {
+                        resultado.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`; // Exibe o JSON formatado corretamente
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultado').textContent = 'Erro ao conectar-se ao servidor.';
+                });
         }
     </script>
 </head>
