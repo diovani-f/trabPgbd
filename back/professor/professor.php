@@ -1,6 +1,6 @@
-<?php
-    
+<?php 
     header('Content-Type: application/json');
+    include_once 'conexao.php';
     
     function buscarProfessor($parametro = 0){
         $sql = "SELECT * FROM professor";
@@ -14,7 +14,7 @@
         if ($resultado->num_rows > 0) {
             while ($row = $resultado->fetch_assoc()) {
                 foreach ($row as $key => $value) {
-                    $row[$key] = utf8_encode($value);
+                    $row[$key] = ($value);
                 }
                 $dados[] = $row;
             }
@@ -26,37 +26,44 @@
     
         echo json_encode($dados);
     }
+
     function criarProfessor($parametro = 0) {
-        
-        $nome = $parametro["nome_professor"]; 
-        $email = $parametro["email_professor"]; 
-        $coordenador = $parametro["coordenador"];
+        $nome = $parametro["nome_professor"];
+        $email = $parametro["email_professor"];
     
         if (empty($nome) || empty($email)) {
             echo json_encode(["erro" => "Nome e email são obrigatórios"]);
             return;
         }
     
-        $conn = conectarBanco();
-        $sql = "INSERT INTO professor (nome, email, coordenador) VALUES (?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssi", $nome, $email, $coordenador);
+        file_put_contents('1.txt', print_r("aa", true) . PHP_EOL, FILE_APPEND);
     
-        if ($stmt->execute()) {
+        $conn = conectarBanco();
+        
+        // Escapando as variáveis para evitar SQL Injection
+        $nome = $conn->real_escape_string($nome);
+        $email = $conn->real_escape_string($email);
+    
+        // Construindo a consulta SQL diretamente
+        $sql = "INSERT INTO professor (nome, email) VALUES ('$nome', '$email')";
+    
+        // Executando a consulta
+        if ($conn->query($sql)) {
             echo json_encode(["sucesso" => "Professor criado com sucesso"]);
         } else {
-            echo json_encode(["erro" => "Erro ao criar professor: " . $stmt->error]);
+            echo json_encode(["erro" => "Erro alllo criar professor: " . $conn->error]);
         }
     
-        $stmt->close();
+        file_put_contents('3.txt', print_r(3, true) . PHP_EOL, FILE_APPEND);
+    
         $conn->close();
     }
-
+    
     function excluirProfessor($parametro = 0) {
         $id = $parametro["id_professor"]; 
     
         if (empty($id)) {
-            echo json_encode(["erro" => "ID do professor � obrigat�rio"]);
+            echo json_encode(["erro" => "ID do professor é obrigatório"]);
             return;
         }
     
@@ -109,31 +116,35 @@
         $conn->close();
     }
     
-
     function editarProfessor($parametro = 0) {
-    $id = $parametro["id_professor"]; 
-    $nome = $parametro["nome_professor"]; 
-    $email = $parametro["email_professor"]; 
-    $coordenador = $parametro["coordenador"];
+        $id = $parametro["id_professor"]; 
+        $nome = $parametro["nome_professor"]; 
+        $email = $parametro["email_professor"]; 
+    
+        if (empty($id) || empty($nome) || empty($email)) {
+            echo json_encode(["erro" => "ID, nome e email são obrigatórios"]);
+            return;
+        }
+    
+        $conn = conectarBanco();
+    
+        // Escapando as variáveis para evitar SQL Injection
+        $nome = $conn->real_escape_string($nome);
+        $email = $conn->real_escape_string($email);
 
-    if (empty($id) || empty($nome) || empty($email)) {
-        echo json_encode(["erro" => "ID, nome e email são obrigatórios"]);
-        return;
+        $id = (int) $id; // Convertendo id para inteiro
+    
+        // Construindo a consulta SQL diretamente
+        $sql = "UPDATE professor SET nome = '$nome', email = '$email' WHERE id = $id";
+    
+        // Executando a consulta
+        if ($conn->query($sql)) {
+            echo json_encode(["sucesso" => "Professor editado com sucesso"]);
+        } else {
+            echo json_encode(["erro" => "Erro ao editar professor: " . $conn->error]);
+        }
+    
+        $conn->close();
     }
-
-    $conn = conectarBanco();
-    $sql = "UPDATE professor SET nome = ?, email = ?, coordenador = ? WHERE id = ?";
-    file_put_contents("sssss.txt", $sql );
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssii", $nome, $email, $coordenador, $id);
-
-    if ($stmt->execute()) {
-        echo json_encode(["sucesso" => "Professor editado com sucesso"]);
-    } else {
-        echo json_encode(["erro" => "Erro ao editar professor: " . $stmt->error]);
-    }
-
-    $stmt->close();
-    $conn->close();
-}
+    
 ?>

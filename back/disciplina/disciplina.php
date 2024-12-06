@@ -168,10 +168,6 @@ function buscarDisciplina_listagem($parametro = []) {
         echo json_encode($dados);
 }
 
-
-
-
-//precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
 function excluirDisciplina($parametro = 0) {
     $id_disciplina = $parametro["id_disciplina"];
 
@@ -198,6 +194,7 @@ function excluirDisciplina($parametro = 0) {
     $stmt->close();
     $conn->close();
 }
+
 
 
 function criarDisciplina($parametro = 0) {

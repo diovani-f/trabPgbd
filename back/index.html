@@ -8,35 +8,84 @@
         function buscarDisciplina(idDisciplina) {
             const dados = new FormData();
             
-            // exemplo de como enviar os dados
-            // dados.append('criarCurso', 1);
-            // dados.append('nome_curso', "zzzzzzz");
-            // dados.append('id_coordenador', 4);
-
-            // dados.append('editarCurso', 1);
-            // dados.append('id_curso', 1);
-            // dados.append('nome_curso', "aaasdasd");
-            // dados.append('id_coordenador', 3);
+            // --------------------- funcionais ------------------
             
+            //disciplina - agenda
+                //obrigatorio
+                //  dados.append('buscarDisciplina', 1);
+                //  dados.append('id_curso', 1);
+                //  dados.append('data_inicio', "2024-02-12");
+                //  dados.append('data_final', "2024-02-19");
+                // //  opcional
+                //  dados.append('id_disciplina', 1);
+                //  dados.append('nome_professor', "João Silva");
+                //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
 
-            // //obrigatorio
-             dados.append('buscarDisciplina', 1);
-             dados.append('id_curso', 1);
-             dados.append('data_inicio', "2024-02-12");
-             dados.append('data_final', "2024-02-19");
-            //  opcional
-             dados.append('id_disciplina', 1);
-             dados.append('nome_professor', "João Silva");
-             dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
+            // listagem para a pagina de edição - disciplina
+                //  //obrigatorio
+                //  dados.append('buscarDisciplina_listagem', 1);
+                //  dados.append('id_curso', 1);
+                //  //  opcional
+                //  dados.append('id_disciplina', 1);
+                //  dados.append('nome_professor', "João Silva");
+                //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
 
-            // listagem para a pagina de edição
-            //  //obrigatorio
-            //  dados.append('buscarDisciplina_listagem', 1);
-            //  dados.append('id_curso', 1);
-            //  //  opcional
-            //  dados.append('id_disciplina', 1);
-            //  dados.append('nome_professor', "João Silva");
-            //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
+            // //excluir disciplina
+                // dados.append('excluirDisciplina', 1);
+                // dados.append('id_disciplina', 3);
+
+            //criar professor:
+                // dados.append('criarProfessor', 1);
+                // dados.append('nome_professor', "aasdjorge");
+                // dados.append('email_professor', "aasdjoxxxrge@gmail.com");
+            
+            //excluir professor:
+                // dados.append('excluirProfessor', 1);
+                // dados.append('id_professor', 1);
+            
+            //Editar professor
+                // dados.append('editarProfessor', 1);
+                // dados.append('id_professor', 6);
+                // dados.append('nome_professor', "aaaaaaaaaaaaaaaaaa");
+                // dados.append('email_professor', "aasdjoxxxrge@gmail.com");
+
+            //buscarProfessor
+                // dados.append('buscarProfessor', 1);
+
+            //buscarSala
+                // dados.append('buscarSala', 1);
+
+            //excluirSala
+                // dados.append('excluirSala', 1);
+                // dados.append('numero_sala', 101);
+
+            //editarSala
+                // dados.append('editarSala', 1);
+                // dados.append('numero_sala', 101);
+                // dados.append('capacidade', 1000);
+
+            // criarSala
+                // dados.append('criarSala', 1);
+                // dados.append('numero_sala', 111);
+                // dados.append('capacidade', 1000);
+
+            //buscarCurso
+                // dados.append('buscarCurso', 1);
+            
+            //excluirCurso
+                // dados.append('excluirCurso', 1);
+                // dados.append('id_curso', 1);
+
+            //editarCurso
+                // dados.append('editarCurso', 1);
+                // dados.append('id_curso', 1);
+                // dados.append('nome_curso', "asdasdasd");
+                // dados.append('id_coordenador', 1);
+
+            //criarCurso
+                // dados.append('criarCurso', 1);
+                // dados.append('nome_curso', "aaaaau");
+                // dados.append('id_coordenador', 2);
 
              fetch('controlador.php', {
                 method: 'POST',
