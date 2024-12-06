@@ -108,7 +108,6 @@ function buscarDisciplina_listagem($parametro = []) {
     // -Obrigatorio-
     $id_curso = $parametro["id_curso"];
 
-
     // // -Opcional-
     if(!empty($parametro["nome_professor"]))
         $professor = " and p.nome like '" . $parametro["nome_professor"] . "%'";
@@ -195,42 +194,6 @@ function excluirDisciplina($parametro = 0) {
     $conn->close();
 }
 
-
-
-function criarDisciplina($parametro = 0) {
-    $nome = $parametro["nome_disciplina"];
-    $carga_horaria = $parametro["carga_horaria"]; 
-    $id_sala = $parametro["id_sala"];
-    $vagas_disponiveis = $parametro["vagas_disponiveis"];
-    $id_professor = $parametro["id_professor"];
-    $id_curso = $parametro["id_curso"];
-    
-    if (empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis) || empty($id_professor) || empty($id_curso)) {
-        echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
-        return;
-    }
-
-   $conn = conectarBanco();
-
-   //para depuração
-   $sql = "INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
-           VALUES ('$nome', $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso)";
-
-   $stmt = $conn->prepare("INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
-                           VALUES (?, ?, ?, ?, ?, ?)");
-
-   $stmt->bind_param("siisii", $nome, $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso);
-
-   if ($stmt->execute()) {
-       echo json_encode(["sucesso" => "Disciplina criada com sucesso"]);
-   } else {
-       echo json_encode(["erro" => "Erro ao criar a disciplina"]);
-   }
-
-   $stmt->close();
-   $conn->close();
-}
-
 function editarDisciplina($parametro = 0) {
 
     $nome = $parametro["nome_disciplina"];
@@ -294,4 +257,92 @@ function editarDisciplina($parametro = 0) {
     // Fechar conexão
     $stmt->close();
     $conn->close();
-}?>
+}
+
+function criarDisciplina($parametro = []) {
+    $nome = $parametro['nome'];
+    $carga_horaria = $parametro['carga_horaria'];
+    $id_sala = $parametro['id_sala'];
+    $vagas_disponiveis = $parametro['vagas_disponiveis'];
+    $id_professor = $parametro['id_professor'];
+    $id_curso = $parametro['id_curso'];
+
+    if (empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis)) {
+        echo json_encode(["erro" => "Nome, carga horária e vagas disponíveis são obrigatórios"]);
+        return;
+    }
+
+    $conn = conectarBanco();
+    $nome = $conn->real_escape_string($nome);
+    $carga_horaria = (int) $carga_horaria;
+    $id_sala = isset($id_sala) ? (int) $id_sala : "NULL";
+    $vagas_disponiveis = (int) $vagas_disponiveis;
+    $id_professor = isset($id_professor) ? (int) $id_professor : "NULL";
+    $id_curso = isset($id_curso) ? (int) $id_curso : "NULL";
+
+    $sql = "INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso)
+            VALUES ('$nome', $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso)";
+
+
+
+    $criaDsiciplina = $conn->query($sql);
+
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["sucesso" => "Disciplina criada com sucesso"]);
+    } else {
+        echo json_encode(["erro" => "Erro ao criar disciplina: " . $conn->error]);
+    }
+
+    $conn->close();
+}
+
+function criarAula($parametro = []) {
+    $id_disciplina = $parametro['id_disciplina'];
+    $dia_da_semana = $parametro['dia_da_semana'];
+    $horario_inicio = $parametro['horario_inicio'];
+    $horario_fim = $parametro['horario_fim'];
+    $data_inicio = $parametro['data_inicio'];
+    $data_final = $parametro['data_final'];
+
+    // Verificação de campos obrigatórios
+    if (empty($id_disciplina) || empty($dia_da_semana) || empty($horario_inicio) || empty($horario_fim) || empty($data_inicio) || empty($data_final)) {
+        echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
+        return;
+    }
+
+    // Validação de `dia_da_semana`
+    $dias_validos = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+    if (!in_array($dia_da_semana, $dias_validos)) {
+        echo json_encode(["erro" => "O dia da semana é inválido"]);
+        return;
+    }
+
+    // Conexão com o banco
+    $conn = conectarBanco();
+
+    // Escapando valores para segurança
+    $id_disciplina = (int) $id_disciplina;
+    $dia_da_semana = $conn->real_escape_string($dia_da_semana);
+    $horario_inicio = $conn->real_escape_string($horario_inicio);
+    $horario_fim = $conn->real_escape_string($horario_fim);
+    $data_inicio = $conn->real_escape_string($data_inicio);
+    $data_final = $conn->real_escape_string($data_final);
+
+    // Construção da query SQL
+    $sql = "INSERT INTO aula (id_disciplina, dia_da_semana, horario_inicio, horario_fim, data_inicio, data_final)
+            VALUES ($id_disciplina, '$dia_da_semana', '$horario_inicio', '$horario_fim', '$data_inicio', '$data_final')";
+
+    // Execução da query
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["sucesso" => "Aula criada com sucesso"]);
+    } else {
+        echo json_encode(["erro" => "Erro ao criar aula: " . $conn->error]);
+    }
+
+    // Fechando conexão
+    $conn->close();
+}
+
+
+
+?>

@@ -9,6 +9,26 @@
             const dados = new FormData();
             
             // --------------------- funcionais ------------------
+
+            //criarDisciplina
+                //  dados.append('criarDisciplina', 1);
+                //  dados.append('nome', "putaria");
+                //  dados.append('id_curso', 1);
+                //  dados.append('id_professor', 1);
+                //  dados.append('vagas_disponiveis', 64)
+                //  dados.append('id_sala', 101)
+                //  dados.append('carga_horaria', 10)
+            
+            //criarAula
+                //  dados.append('criarAula', 1);
+                //  dados.append('id_disciplina', 1);
+                //  dados.append('dia_da_semana', "Segunda");
+                //  dados.append('horario_inicio', "10:00");
+                //  dados.append('horario_fim', "12:00");
+                //  dados.append('data_inicio', "2024-02-01")
+                //  dados.append('data_final', "2024-06-30")
+
+
             
             //disciplina - agenda
                 //obrigatorio
@@ -25,7 +45,7 @@
                 //  //obrigatorio
                 //  dados.append('buscarDisciplina_listagem', 1);
                 //  dados.append('id_curso', 1);
-                //  //  opcional
+                 //  opcional
                 //  dados.append('id_disciplina', 1);
                 //  dados.append('nome_professor', "João Silva");
                 //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
@@ -86,6 +106,9 @@
                 // dados.append('criarCurso', 1);
                 // dados.append('nome_curso', "aaaaau");
                 // dados.append('id_coordenador', 2);
+
+
+            
 
              fetch('controlador.php', {
                 method: 'POST',

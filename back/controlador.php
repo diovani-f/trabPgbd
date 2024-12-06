@@ -27,8 +27,8 @@
         'editarSala'     => 'editarSala',
         'excluirSala'    => 'excluirSala',
         'criarSala'     => 'criarSala',
-
-        'buscarDisciplina_listagem' => 'buscarDisciplina_listagem',
+        'criarAula'     => 'criarAula',
+        'buscarDisciplina_listagem' => 'buscarDisciplina_listagem'
     ];
 
     $resultado = "";
