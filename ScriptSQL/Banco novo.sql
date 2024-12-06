@@ -80,3 +80,12 @@ ALTER TABLE historico_disciplinas
 ADD CONSTRAINT fk_historico_curso
 FOREIGN KEY (id_curso) REFERENCES curso(id)
 ON DELETE CASCADE;
+
+
+ALTER TABLE aula
+DROP FOREIGN KEY aula_ibfk_1;
+
+ALTER TABLE aula
+ADD CONSTRAINT aula_ibfk_1
+FOREIGN KEY (id_disciplina) REFERENCES disciplina(id)
+ON DELETE CASCADE;
