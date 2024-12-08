@@ -181,5 +181,6 @@ if (isset($_GET['status'])) {
         <a href="painel_admin.php" class="back-link">Voltar ao Painel ADM</a>
     </div>
 
+    
 </body>
 </html>

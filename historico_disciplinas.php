@@ -9,7 +9,7 @@ include_once 'back/conexao.php';
 $conn = conectarBanco();
 
 $sql = "SELECT hd.id, hd.acao, hd.data_hora,
-               hd.nome_disciplina, -- Pega diretamente do histórico
+               hd.nome_disciplina,
                p.nome AS nome_coordenador,
                c.nome AS nome_curso
         FROM historico_disciplinas hd
@@ -36,8 +36,11 @@ $resultado = $conn->query($sql);
 
         .container {
             width: 90%;
-            margin: 0 auto;
-            padding: 30px 0;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         h2 {
@@ -67,24 +70,24 @@ $resultado = $conn->query($sql);
             border-bottom: 1px solid #ddd;
         }
 
-        table th:first-child, table td:first-child {
-            width: 5%;
-        }
-
         table tr:hover {
             background-color: #f2f2f2;
         }
 
         .back-link {
             display: inline-block;
-            margin-bottom: 20px;
-            color: #333;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: #2196F3;
+            color: white;
             text-decoration: none;
-            font-size: 1.1em;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .back-link:hover {
-            color: #4CAF50;
+            background-color: #1976D2;
         }
     </style>
 </head>
@@ -108,12 +111,12 @@ $resultado = $conn->query($sql);
         <?php if ($resultado && $resultado->num_rows > 0): ?>
             <?php while ($row = $resultado->fetch_assoc()): ?>
                 <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo $row['nome_coordenador'] ?: 'N/A'; ?></td>
-                    <td><?php echo $row['nome_disciplina'] ?: 'N/A'; ?></td>
-                    <td><?php echo $row['nome_curso'] ?: 'N/A'; ?></td>
-                    <td><?php echo $row['acao']; ?></td>
-                    <td><?php echo $row['data_hora']; ?></td>
+                    <td><?= htmlspecialchars($row['id']); ?></td>
+                    <td><?= htmlspecialchars($row['nome_coordenador'] ?: 'N/A'); ?></td>
+                    <td><?= htmlspecialchars($row['nome_disciplina'] ?: 'N/A'); ?></td>
+                    <td><?= htmlspecialchars($row['nome_curso'] ?: 'N/A'); ?></td>
+                    <td><?= htmlspecialchars($row['acao']); ?></td>
+                    <td><?= htmlspecialchars($row['data_hora']); ?></td>
                 </tr>
             <?php endwhile; ?>
         <?php else: ?>

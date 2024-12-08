@@ -2,73 +2,50 @@
 include_once __DIR__ . '/../conexao.php';
 header('Content-Type: application/json');
 
-function buscarCurso($parametro = 0){
+function buscarCurso() {
     $sql = "SELECT * FROM curso";
-    $conn = conectarBanco();    
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+    $conn = conectarBanco();
+    $resultado = $conn->query($sql);
 
     $dados = [];
-
-    if ($resultado->num_rows > 0) {
+    if ($resultado && $resultado->num_rows > 0) {
         while ($row = $resultado->fetch_assoc()) {
-            foreach ($row as $key => $value) {
-                $row[$key] = $value;
-            }
             $dados[] = $row;
         }
     }
 
-    $stmt->close();
     $conn->close();
-
     echo json_encode($dados);
 }
 
-function criarCurso($parametro = 0) {
-    $nome = $parametro['nome_curso'];
-    $id_coordenador = $parametro['id_coordenador'];
+function criarCurso($parametro) {
+    $nome = $parametro['nome_curso'] ?? null;
+    $id_coordenador = $parametro['id_coordenador'] ?? null;
 
-    // Verificação de campos obrigatórios
     if (empty($nome) || empty($id_coordenador)) {
         echo json_encode(["erro" => "Nome e coordenador são obrigatórios"]);
         return;
     }
 
-    // Validação de tipos
-    if (!is_string($nome) || !is_numeric($id_coordenador)) {
-        echo json_encode(["erro" => "Dados inválidos para nome ou coordenador"]);
-        return;
-    }
-
-    // Conexão com o banco
     $conn = conectarBanco();
-
-    // Preparando a consulta SQL
     $sql = "INSERT INTO curso (nome, id_coordenador) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
-    
-    // Ligando os parâmetros
     $stmt->bind_param("si", $nome, $id_coordenador);
 
-    // Executando a consulta
     if ($stmt->execute()) {
         echo json_encode(["sucesso" => "Curso criado com sucesso"]);
     } else {
         echo json_encode(["erro" => "Erro ao criar curso: " . $stmt->error]);
     }
 
-    // Fechando a conexão
     $stmt->close();
     $conn->close();
 }
 
-
-function editarCurso($parametro = 0) {
-    $id = $parametro["id_curso"];
-    $nome = $parametro["nome_curso"];
-    $id_coordenador = $parametro["id_coordenador"];
+function editarCurso($parametro) {
+    $id = $parametro["id_curso"] ?? null;
+    $nome = $parametro["nome_curso"] ?? null;
+    $id_coordenador = $parametro["id_coordenador"] ?? null;
 
     if (empty($id) || empty($nome) || empty($id_coordenador)) {
         echo json_encode(["erro" => "ID, nome e coordenador são obrigatórios"]);
@@ -76,27 +53,22 @@ function editarCurso($parametro = 0) {
     }
 
     $conn = conectarBanco();
+    $sql = "UPDATE curso SET nome = ?, id_coordenador = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sii", $nome, $id_coordenador, $id);
 
-    // Escapando os dados para evitar SQL Injection
-    $id = (int) $id; // Garantir que o id seja um inteiro
-    $id_coordenador = (int) $id_coordenador; // Garantir que o id_coordenador seja um inteiro
-    $nome = $conn->real_escape_string($nome); // Escapar o nome
-
-    // Construir a consulta SQL diretamente
-    $sql = "UPDATE curso SET nome = '$nome', id_coordenador = $id_coordenador WHERE id = $id";
-
-    if ($conn->query($sql)) {
+    if ($stmt->execute()) {
         echo json_encode(["sucesso" => "Curso editado com sucesso"]);
     } else {
-        echo json_encode(["erro" => "Erro ao editar curso: " . $conn->error]);
+        echo json_encode(["erro" => "Erro ao editar curso: " . $stmt->error]);
     }
 
+    $stmt->close();
     $conn->close();
 }
 
-function excluirCurso($parametro = 0) {
-    // O curso não pode ter uma disciplina cadastrada
-    $id = $parametro["id_curso"];
+function excluirCurso($parametro) {
+    $id = $parametro["id_curso"] ?? null;
 
     if (empty($id)) {
         echo json_encode(["erro" => "ID do curso é obrigatório"]);
@@ -105,7 +77,7 @@ function excluirCurso($parametro = 0) {
 
     $conn = conectarBanco();
 
-    // Verificar se há alguma disciplina associada ao curso
+    // Verificar se há disciplinas associadas ao curso
     $stmt = $conn->prepare("SELECT COUNT(*) FROM disciplina WHERE id_curso = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -114,17 +86,16 @@ function excluirCurso($parametro = 0) {
     $stmt->close();
 
     if ($count > 0) {
-        echo json_encode(["erro" => "Não é possível excluir o curso, pois há disciplinas cadastradas a ele"]);
+        echo json_encode(["erro" => "Não é possível excluir o curso, pois há disciplinas associadas."]);
         $conn->close();
         return;
     }
 
-    // Preparar a query para excluir o curso
+    // Excluir curso
     $sql = "DELETE FROM curso WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
 
-    // Executar a query
     if ($stmt->execute()) {
         echo json_encode(["sucesso" => "Curso excluído com sucesso"]);
     } else {

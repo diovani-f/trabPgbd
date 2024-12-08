@@ -110,7 +110,7 @@ if (!isset($_SESSION['usuario'])) {
 
     <div class="container">
         <h2>Cadastrar Coordenador</h2>
-        <form method="POST" action="processar_cadastro_coordenador.php">
+        <form method="POST" action="back/controlador.php">
             <label for="nome">Nome do Coordenador:</label>
             <input type="text" id="nome" name="nome" placeholder="Digite o nome do coordenador" required>
 

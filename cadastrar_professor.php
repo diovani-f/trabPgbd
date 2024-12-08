@@ -123,10 +123,12 @@ if (!isset($_SESSION['usuario'])) {
             <input type="hidden" name="coordenador" value="0">
 
             <button type="submit">Cadastrar</button>
+            
         </form>
 
         <a href="painel_admin.php" class="back-link">Voltar ao Painel ADM</a>
     </div>
+    
 
     <div class="footer">
         &copy; 2024 Sistema Acadêmico. Todos os direitos reservados.
