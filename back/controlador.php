@@ -9,7 +9,6 @@ include_once 'professor/professor.php';
 include_once 'sala/sala.php';
 
 
-
 $acoes = [
     'buscarDisciplina'    => 'buscarDisciplina',
     'excluirDisciplina'   => 'excluirDisciplina',
@@ -26,11 +25,11 @@ $acoes = [
     'excluirCurso'        => 'excluirCurso',
     'criarCurso'          => 'criarCurso',
 
-        'buscarSala'     => 'buscarSala',
-        'editarSala'     => 'editarSala',
-        'excluirSala'    => 'excluirSala',
-        'criarSala'     => 'criarSala',
-    ];
+    'buscarSala'          => 'buscarSala',
+    'editarSala'          => 'editarSala',
+    'excluirSala'         => 'excluirSala',
+    'criarSala'           => 'criarSala',
+];
 
 $resultado = "";
 
