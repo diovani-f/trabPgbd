@@ -1,19 +1,32 @@
 <?php
 header('Content-Type: application/json');
-include_once 'conexao.php';
+include_once __DIR__ . '/../conexao.php';
 
 function buscarDisciplina($parametro = 0) {
     // Isso vem tudo do js
     // -Obrigatorio-
     $id_curso = $parametro["id_curso"];
-    $data_inicio = "2024-01-16";
-    $data_final = "2024-01-22";
+    $data_inicio = $parametro["data_inicio"];
+    $data_final = $parametro["data_final"];
+
     // // -Opcional-
-    // $nome_disciplina = $parametro["nome_disciplina"];
-    // $id_disciplina = $parametro["id_disciplina"];
-    // $professor = $parametro["nome_professor"];
+    if(!empty($parametro["nome_professor"]))
+        $professor = " and p.nome like '" . $parametro["nome_professor"] . "%'";
+    else
+        $professor = "";
     
 
+    if(!empty($parametro["id_disciplina"]))
+        $id_disciplina = " and d.id = " . $parametro["id_disciplina"];
+    else
+        $id_disciplina = "";
+
+
+    if(!empty($parametro["nome_disciplina"]))
+        $nome_disciplina = " and d.nome like '" . $parametro["nome_disciplina"] . "%'";
+    else
+        $nome_disciplina = "";
+    
     $sql = "select 
             d.id as id_disciplina, 
             d.nome as disciplina, 
@@ -27,23 +40,15 @@ function buscarDisciplina($parametro = 0) {
             join aula a ON a.id_disciplina = d.id
             join sala s ON s.numero = d.id_sala
             join curso c ON c.id = d.id_curso 
-            where c.id = $id_curso and a.data_inicio <= '$data_inicio' and a.data_final >= '$data_final'";
-
-    // if($professor){
-    //     $parametros .= " and p.nome like '" . utf8_decode($professor) . "%'";
-    // }
-
-    // if($id_disciplina){
-    //     $parametros .= " and d.iddisciplina = " . $id_disciplina;
-    // }
-
-    // if($nome_disciplina){
-    //     $parametros .= " and d.nome like '" . utf8_decode($nome_disciplina) . "%'";
-    // }
-
-    // $sql = $sql . $parametros;    
-
+            where 
+            c.id = $id_curso 
+            and a.data_inicio <= '$data_inicio' 
+            and a.data_final >= '$data_final'
+            $professor
+            $id_disciplina
+            $nome_disciplina";
     
+
         $conn = conectarBanco();    
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -54,7 +59,103 @@ function buscarDisciplina($parametro = 0) {
         if ($resultado->num_rows > 0) {
             while ($row = $resultado->fetch_assoc()) {
                 foreach ($row as $key => $value) {
-                    $row[$key] = utf8_encode($value);
+                    $row[$key] = ($value);
+                }
+                $dados[] = $row;
+            }
+        }
+        
+        foreach ($dados as $index => $item) {
+            $dados[$index]['dia_semana'] = buscardiadasemana($data_inicio, $data_final, $item['dia_da_semana']);
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        echo json_encode($dados);
+}
+
+function buscardiadasemana($dataInicio, $dataFim, $diaSemanaDesejado){
+    // Mapear dias da semana de inglês para português
+    $diasSemana = [
+        'Monday'    => 'Segunda',
+        'Tuesday'   => 'Terça',
+        'Wednesday' => 'Quarta',
+        'Thursday'  => 'Quinta',
+        'Friday'    => 'Sexta',
+        'Saturday'  => 'Sábado',
+        'Sunday'    => 'Domingo',
+    ];
+
+    // Converter para DateTime
+    $inicio = new DateTime($dataInicio);
+    $fim = new DateTime($dataFim);
+
+    // Iterar sobre o intervalo
+    $periodo = new DatePeriod($inicio, new DateInterval('P1D'), $fim);    
+
+    foreach ($periodo as $data) {
+        $diaSemanaAtual = $diasSemana[$data->format('l')]; // Traduz para português
+        if ($diaSemanaAtual === $diaSemanaDesejado) {
+            return $data->format('Y-m-d');
+        }
+    }
+
+}
+
+function buscarDisciplina_listagem($parametro = []) {
+    // Isso vem tudo do js
+    // -Obrigatorio-
+    $id_curso = $parametro["id_curso"];
+
+    // // -Opcional-
+    if(!empty($parametro["nome_professor"]))
+        $professor = " and p.nome like '" . $parametro["nome_professor"] . "%'";
+    else
+        $professor = "";
+    
+    if(!empty($parametro["id_disciplina"]))
+        $id_disciplina = " and d.id = " . $parametro["id_disciplina"];
+    else
+        $id_disciplina = "";
+
+
+    if(!empty($parametro["nome_disciplina"]))
+        $nome_disciplina = " and d.nome like '" . $parametro["nome_disciplina"] . "%'";
+    else
+        $nome_disciplina = "";
+    
+    $sql = "select 
+            d.id as id_disciplina, 
+            d.nome as disciplina, 
+            p.nome as professor, 
+            a.dia_da_semana, 
+            a.horario_inicio, 
+            a.horario_fim , 
+            s.numero AS sala
+            from disciplina d 
+            join professor p ON p.id = d.id_professor
+            join aula a ON a.id_disciplina = d.id
+            join sala s ON s.numero = d.id_sala
+            join curso c ON c.id = d.id_curso 
+            where 
+            c.id = $id_curso 
+            $professor
+            $id_disciplina
+            $nome_disciplina";
+    
+
+        $conn = conectarBanco();    
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+    
+        $dados = [];
+    
+        if ($resultado->num_rows > 0) {
+            while ($row = $resultado->fetch_assoc()) {
+                foreach ($row as $key => $value) {
+                    $row[$key] = ($value);
                 }
                 $dados[] = $row;
             }
@@ -63,11 +164,9 @@ function buscarDisciplina($parametro = 0) {
         $stmt->close();
         $conn->close();
 
-    
         echo json_encode($dados);
 }
 
-//precisa adicionar umas trigger pra dar uns delete em cascade, principalmente em aula
 function excluirDisciplina($parametro = 0) {
     $id_disciplina = $parametro["id_disciplina"];
 
@@ -93,41 +192,6 @@ function excluirDisciplina($parametro = 0) {
     // Fecha a conexão
     $stmt->close();
     $conn->close();
-}
-
-
-function criarDisciplina($parametro = 0) {
-    $nome = $parametro["nome_disciplina"];
-    $carga_horaria = $parametro["carga_horaria"]; 
-    $id_sala = $parametro["id_sala"];
-    $vagas_disponiveis = $parametro["vagas_disponiveis"];
-    $id_professor = $parametro["id_professor"];
-    $id_curso = $parametro["id_curso"];
-    
-    if (empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis) || empty($id_professor) || empty($id_curso)) {
-        echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
-        return;
-    }
-
-   $conn = conectarBanco();
-
-   //para depuração
-   $sql = "INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
-           VALUES ('$nome', $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso)";
-
-   $stmt = $conn->prepare("INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso) 
-                           VALUES (?, ?, ?, ?, ?, ?)");
-
-   $stmt->bind_param("siisii", $nome, $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso);
-
-   if ($stmt->execute()) {
-       echo json_encode(["sucesso" => "Disciplina criada com sucesso"]);
-   } else {
-       echo json_encode(["erro" => "Erro ao criar a disciplina"]);
-   }
-
-   $stmt->close();
-   $conn->close();
 }
 
 function editarDisciplina($parametro = 0) {
@@ -193,4 +257,92 @@ function editarDisciplina($parametro = 0) {
     // Fechar conexão
     $stmt->close();
     $conn->close();
-}?>
+}
+
+function criarDisciplina($parametro = []) {
+    $nome = $parametro['nome_disciplina'];
+    $carga_horaria = $parametro['carga_horaria'];
+    $id_sala = $parametro['id_sala'];
+    $vagas_disponiveis = $parametro['vagas_disponiveis'];
+    $id_professor = $parametro['id_professor'];
+    $id_curso = $parametro['id_curso'];
+
+    if (empty($nome) || empty($carga_horaria) || empty($vagas_disponiveis)) {
+        echo json_encode(["erro" => "Nome, carga horária e vagas disponíveis são obrigatórios"]);
+        return;
+    }
+
+    $conn = conectarBanco();
+    $nome = $conn->real_escape_string($nome);
+    $carga_horaria = (int) $carga_horaria;
+    $id_sala = isset($id_sala) ? (int) $id_sala : "NULL";
+    $vagas_disponiveis = (int) $vagas_disponiveis;
+    $id_professor = isset($id_professor) ? (int) $id_professor : "NULL";
+    $id_curso = isset($id_curso) ? (int) $id_curso : "NULL";
+
+    $sql = "INSERT INTO disciplina (nome, carga_horaria, id_sala, vagas_disponiveis, id_professor, id_curso)
+            VALUES ('$nome', $carga_horaria, $id_sala, $vagas_disponiveis, $id_professor, $id_curso)";
+
+
+
+    $criaDsiciplina = $conn->query($sql);
+
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["sucesso" => "Disciplina criada com sucesso"]);
+    } else {
+        echo json_encode(["erro" => "Erro ao criar disciplina: " . $conn->error]);
+    }
+
+    $conn->close();
+}
+
+function criarAula($parametro = []) {
+    $id_disciplina = $parametro['id_disciplina'];
+    $dia_da_semana = $parametro['dia_da_semana'];
+    $horario_inicio = $parametro['horario_inicio'];
+    $horario_fim = $parametro['horario_fim'];
+    $data_inicio = $parametro['data_inicio'];
+    $data_final = $parametro['data_final'];
+
+    // Verificação de campos obrigatórios
+    if (empty($id_disciplina) || empty($dia_da_semana) || empty($horario_inicio) || empty($horario_fim) || empty($data_inicio) || empty($data_final)) {
+        echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
+        return;
+    }
+
+    // Validação de `dia_da_semana`
+    $dias_validos = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
+    if (!in_array($dia_da_semana, $dias_validos)) {
+        echo json_encode(["erro" => "O dia da semana é inválido"]);
+        return;
+    }
+
+    // Conexão com o banco
+    $conn = conectarBanco();
+
+    // Escapando valores para segurança
+    $id_disciplina = (int) $id_disciplina;
+    $dia_da_semana = $conn->real_escape_string($dia_da_semana);
+    $horario_inicio = $conn->real_escape_string($horario_inicio);
+    $horario_fim = $conn->real_escape_string($horario_fim);
+    $data_inicio = $conn->real_escape_string($data_inicio);
+    $data_final = $conn->real_escape_string($data_final);
+
+    // Construção da query SQL
+    $sql = "INSERT INTO aula (id_disciplina, dia_da_semana, horario_inicio, horario_fim, data_inicio, data_final)
+            VALUES ($id_disciplina, '$dia_da_semana', '$horario_inicio', '$horario_fim', '$data_inicio', '$data_final')";
+
+    // Execução da query
+    if ($conn->query($sql) === TRUE) {
+        echo json_encode(["sucesso" => "Aula criada com sucesso"]);
+    } else {
+        echo json_encode(["erro" => "Erro ao criar aula: " . $conn->error]);
+    }
+
+    // Fechando conexão
+    $conn->close();
+}
+
+
+
+?>

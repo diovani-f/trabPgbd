@@ -1,45 +1,51 @@
 <?php
-    include_once 'conexao.php';
+header('Content-Type: application/json');
 
-    include_once 'professor/professor.php';
-    include_once 'disciplina/disciplina.php';
-    include_once 'curso/curso.php';
-    include_once 'sala/sala.php';
+// Inclui as funções
+include_once 'conexao.php';
+include_once 'curso/curso.php';
+include_once 'disciplina/disciplina.php';
+include_once 'professor/professor.php';
+include_once 'sala/sala.php';
 
 
-    $acoes = [
-        'buscarDisciplina'    => 'buscarDisciplina',
-        'excluirDisciplina'  => 'excluirDisciplina',
-        'criarDisciplina'    => 'criarDisciplina',
-        'editarDisciplina'   => 'editarDisciplina',
 
-        'buscarProfessor'     => 'buscarProfessor',
-        'editarProfessor'     => 'editarProfessor',
-        'excluirProfessor'    => 'excluirProfessor',
-        'criarProfessor'     => 'criarProfessor',
+$acoes = [
+    'buscarDisciplina'    => 'buscarDisciplina',
+    'excluirDisciplina'   => 'excluirDisciplina',
+    'criarDisciplina'     => 'criarDisciplina',
+    'editarDisciplina'    => 'editarDisciplina',
 
-        'buscarCurso'     => 'buscarCurso',
-        'editarCurso'     => 'editarCurso',
-        'excluirCurso'    => 'excluirCurso',
-        'criarCurso'     => 'criarCurso',
+    'buscarProfessor'     => 'buscarProfessor',
+    'editarProfessor'     => 'editarProfessor',
+    'excluirProfessor'    => 'excluirProfessor',
+    'criarProfessor'      => 'criarProfessor',
 
-        'buscarSala'     => 'buscarSala',
-        'editarSala'     => 'editarSala',
-        'excluirSala'    => 'excluirSala',
-        'criarSala'     => 'criarSala',
-    ];
+    'buscarCurso'         => 'buscarCurso',
+    'editarCurso'         => 'editarCurso',
+    'excluirCurso'        => 'excluirCurso',
+    'criarCurso'          => 'criarCurso',
 
-    $resultado = "";
+    'criarAula'       => 'criarAula',
+    'buscarAula'      => 'buscarAula',
+    'editarAula'      => 'editarAula',
+    'excluirAula'     => 'excluirAula',
 
-    foreach ($acoes as $chave => $funcao) {
-        if (isset($_POST[$chave])) {
-            $resultado = $funcao($_POST);
-            break; 
-        }
+    'buscarSala'          => 'buscarSala',
+    'editarSala'          => 'editarSala',
+    'excluirSala'         => 'excluirSala',
+    'criarSala'           => 'criarSala',
+];
+
+$resultado = "";
+
+// Verifica qual ação chegou via POST e executa
+foreach ($acoes as $chave => $funcao) {
+    if (isset($_POST[$chave])) {
+        $resultado = $funcao($_POST);
+        break; 
     }
+}
 
-    file_put_contents('resultado.txt',print_r($resultado, true) . PHP_EOL ,FILE_APPEND);
-
-
-    echo $resultado;
-?>
+// Retorno final (o echo já está nas funções, então aqui pode não ter nada)
+// Caso a função retorne dados usando echo, já basta.
