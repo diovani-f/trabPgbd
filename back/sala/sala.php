@@ -1,56 +1,36 @@
 <?php
-header('Content-Type: application/json');
-include_once __DIR__ . '/../conexao.php';
 
-function buscarSala($parametro = 0) {
-    $conn = conectarBanco();
-    $sql = "SELECT * FROM sala";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+    header('Content-Type: application/json');
 
-    $dados = [];
-    if ($resultado->num_rows > 0) {
-        while ($row = $resultado->fetch_assoc()) {
-            foreach ($row as $key => $value) {
-                $row[$key] = utf8_encode($value);
-            }
-            $dados[] = $row;
+    function criarSala($parametro = 0) {
+        $numero = $parametro['numero_sala']; 
+        $capacidade = $parametro['capacidade'];
+
+        if (empty($numero) || empty($capacidade)) {
+            echo json_encode(["erro" => "Todos os campos obrigatórios devem ser preenchidos"]);
+            return;
         }
+
+        $conn = conectarBanco();
+
+        $stmt = $conn->prepare("INSERT INTO sala (numero, capacidade) VALUES (?, ?)");
+        $stmt->bind_param("ii", $numero, $capacidade);
+
+        if ($stmt->execute()) {
+            echo json_encode(["sucesso" => "Sala criada com sucesso"]);
+        } else {
+            echo json_encode(["erro" => "Erro ao criar a sala"]);
+        }
+
+        $stmt->close();
+        $conn->close();
     }
 
-    $stmt->close();
-    $conn->close();
-    echo json_encode($dados);
-}
-
-function criarSala($parametro = 0) {
-    $numero = $parametro['numero_sala'];
-    $capacidade = $parametro['capacidade_sala'];
-
-    if (empty($numero) || empty($capacidade)) {
-        echo json_encode(["erro" => "Número e capacidade da sala são obrigatórios"]);
-        return;
-    }
-
-    $conn = conectarBanco();
-    $sql = "INSERT INTO sala (numero, capacidade) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $numero, $capacidade);
-
-    if ($stmt->execute()) {
-        echo json_encode(["sucesso" => "Sala criada com sucesso"]);
-    } else {
-        echo json_encode(["erro" => "Erro ao criar sala: " . $stmt->error]);
-    }
-
-    $stmt->close();
-    $conn->close();
-}
+    
 
 function editarSala($parametro = 0) {
-    $numero = $parametro['numero_sala'];
-    $capacidade = $parametro['capacidade_sala'];
+        $numero = $parametro['numero_sala']; 
+        $capacidade = $parametro['capacidade'];
 
     if (empty($numero) || empty($capacidade)) {
         echo json_encode(["erro" => "Número e capacidade da sala são obrigatórios"]);
@@ -58,19 +38,23 @@ function editarSala($parametro = 0) {
     }
 
     $conn = conectarBanco();
-    $sql = "UPDATE sala SET capacidade = ? WHERE numero = ?";
-    $stmt = $conn->prepare($sql);
+
+    $stmt = $conn->prepare("UPDATE sala SET capacidade = ? WHERE numero = ?");
     $stmt->bind_param("ii", $capacidade, $numero);
 
-    if ($stmt->execute()) {
+
+    // Executando a consulta
+    if ($conn->query($sql)) {
         echo json_encode(["sucesso" => "Sala editada com sucesso"]);
     } else {
-        echo json_encode(["erro" => "Erro ao editar sala: " . $stmt->error]);
+        echo json_encode(["erro" => "Erro ao editar a sala"]);
     }
+
 
     $stmt->close();
     $conn->close();
 }
+
 
 function excluirSala($parametro = 0) {
     $numero = $parametro['numero_sala'];
@@ -81,8 +65,9 @@ function excluirSala($parametro = 0) {
     }
 
     $conn = conectarBanco();
-    $sql = "DELETE FROM sala WHERE numero = ?";
-    $stmt = $conn->prepare($sql);
+
+    // Preparar a query para excluir a sala
+    $stmt = $conn->prepare("DELETE FROM sala WHERE numero = ?");
     $stmt->bind_param("i", $numero);
 
     if ($stmt->execute()) {
@@ -94,3 +79,29 @@ function excluirSala($parametro = 0) {
     $stmt->close();
     $conn->close();
 }
+
+
+function buscarSala($parametro = 0){
+    $sql = "SELECT * FROM sala";
+    $conn = conectarBanco();    
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    $dados = [];
+
+    if ($resultado->num_rows > 0) {
+        while ($row = $resultado->fetch_assoc()) {
+            foreach ($row as $key => $value) {
+                $row[$key] = utf8_encode($value);
+            }
+            $dados[] = $row;
+        }
+    }
+
+    $stmt->close();
+    $conn->close();
+
+    echo json_encode($dados);
+}
+?>

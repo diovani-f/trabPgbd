@@ -8,36 +8,124 @@
         function buscarDisciplina(idDisciplina) {
             const dados = new FormData();
             
-            //exemplo de como enviar os dados
-            // dados.append('criarCurso', 1);
-            // dados.append('nome_curso', "zzzzzzz");
-            // dados.append('id_coordenador', 3);
+            // --------------------- funcionais ------------------
 
-            // dados.append('editarCurso', 1);
-            // dados.append('id_curso', 1);
-            // dados.append('nome_curso', "aaasdasd");
-            // dados.append('id_coordenador', 3);
+            //criarDisciplina
+                //  dados.append('criarDisciplina', 1);
+                //  dados.append('nome', "putaria");
+                //  dados.append('id_curso', 1);
+                //  dados.append('id_professor', 1);
+                //  dados.append('vagas_disponiveis', 64)
+                //  dados.append('id_sala', 101)
+                //  dados.append('carga_horaria', 10)
+            
+            //criarAula
+                //  dados.append('criarAula', 1);
+                //  dados.append('id_disciplina', 1);
+                //  dados.append('dia_da_semana', "Segunda");
+                //  dados.append('horario_inicio', "10:00");
+                //  dados.append('horario_fim', "12:00");
+                //  dados.append('data_inicio', "2024-02-01")
+                //  dados.append('data_final', "2024-06-30")
+
+
+            
+            //disciplina - agenda
+                //obrigatorio
+                //  dados.append('buscarDisciplina', 1);
+                //  dados.append('id_curso', 1);
+                //  dados.append('data_inicio', "2024-02-12");
+                //  dados.append('data_final', "2024-02-19");
+                // //  opcional
+                //  dados.append('id_disciplina', 1);
+                //  dados.append('nome_professor', "João Silva");
+                //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
+
+            // listagem para a pagina de edição - disciplina
+                //  //obrigatorio
+                //  dados.append('buscarDisciplina_listagem', 1);
+                //  dados.append('id_curso', 1);
+                 //  opcional
+                //  dados.append('id_disciplina', 1);
+                //  dados.append('nome_professor', "João Silva");
+                //  dados.append('nome_disciplina', "Algoritmos e Estruturas de Dados");
+
+            // //excluir disciplina
+                // dados.append('excluirDisciplina', 1);
+                // dados.append('id_disciplina', 3);
+
+            //criar professor:
+                // dados.append('criarProfessor', 1);
+                // dados.append('nome_professor', "aasdjorge");
+                // dados.append('email_professor', "aasdjoxxxrge@gmail.com");
+            
+            //excluir professor:
+                // dados.append('excluirProfessor', 1);
+                // dados.append('id_professor', 1);
+            
+            //Editar professor
+                // dados.append('editarProfessor', 1);
+                // dados.append('id_professor', 6);
+                // dados.append('nome_professor', "aaaaaaaaaaaaaaaaaa");
+                // dados.append('email_professor', "aasdjoxxxrge@gmail.com");
+
+            //buscarProfessor
+                // dados.append('buscarProfessor', 1);
+
+            //buscarSala
+                // dados.append('buscarSala', 1);
+
+            //excluirSala
+                // dados.append('excluirSala', 1);
+                // dados.append('numero_sala', 101);
+
+            //editarSala
+                // dados.append('editarSala', 1);
+                // dados.append('numero_sala', 101);
+                // dados.append('capacidade', 1000);
+
+            // criarSala
+                // dados.append('criarSala', 1);
+                // dados.append('numero_sala', 111);
+                // dados.append('capacidade', 1000);
+
+            //buscarCurso
+                // dados.append('buscarCurso', 1);
+            
+            //excluirCurso
+                // dados.append('excluirCurso', 1);
+                // dados.append('id_curso', 1);
+
+            //editarCurso
+                // dados.append('editarCurso', 1);
+                // dados.append('id_curso', 1);
+                // dados.append('nome_curso', "asdasdasd");
+                // dados.append('id_coordenador', 1);
+
+            //criarCurso
+                // dados.append('criarCurso', 1);
+                // dados.append('nome_curso', "aaaaau");
+                // dados.append('id_coordenador', 2);
+
+
             
 
-             dados.append('buscarDisciplina', 1);
-             dados.append('id_curso', 1);
-
-
-            fetch('controlador.php', {
+             fetch('controlador.php', {
                 method: 'POST',
                 body: dados
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.erro) {
-                    document.getElementById('resultado').textContent = 'Erro: ' + data.erro;
-                } else {
-                    document.getElementById('resultado').textContent = JSON.stringify(data, null, 2); // Exibe o JSON formatado na p�gina
-                }
-            })
-            .catch(error => {
-                document.getElementById('resultado').textContent = 'Erro ao conectar-se ao servidor.';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    const resultado = document.getElementById('resultado');
+                    if (data.erro) {
+                        resultado.textContent = 'Erro: ' + data.erro;
+                    } else {
+                        resultado.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`; // Exibe o JSON formatado corretamente
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('resultado').textContent = 'Erro ao conectar-se ao servidor.';
+                });
         }
     </script>
 </head>

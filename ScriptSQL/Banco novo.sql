@@ -61,16 +61,16 @@ CREATE TABLE aula (
 );
 
 -- Criação da tabela de usuários (login)
-CREATE TABLE usuario (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    tipo ENUM('super_usuario', 'coordenador') NOT NULL
-);
+-- CREATE TABLE usuario (
+--     id INT PRIMARY KEY AUTO_INCREMENT,
+--     nome VARCHAR(100) NOT NULL,
+--     email VARCHAR(100) NOT NULL UNIQUE,
+--     senha VARCHAR(255) NOT NULL,
+--     tipo ENUM('super_usuario', 'coordenador') NOT NULL
+-- );
+-- -- Relacionamento entre coordenador e curso
+-- ALTER TABLE curso ADD FOREIGN KEY (id_coordenador) REFERENCES usuario(id);
 
--- Relacionamento entre coordenador e curso
-ALTER TABLE curso ADD FOREIGN KEY (id_coordenador) REFERENCES usuario(id);
 
 -- Adiciona a coluna id_curso em historico_disciplinas
 ALTER TABLE historico_disciplinas ADD COLUMN id_curso INT;
@@ -79,4 +79,13 @@ ALTER TABLE historico_disciplinas ADD COLUMN id_curso INT;
 ALTER TABLE historico_disciplinas
 ADD CONSTRAINT fk_historico_curso
 FOREIGN KEY (id_curso) REFERENCES curso(id)
+ON DELETE CASCADE;
+
+
+ALTER TABLE aula
+DROP FOREIGN KEY aula_ibfk_1;
+
+ALTER TABLE aula
+ADD CONSTRAINT aula_ibfk_1
+FOREIGN KEY (id_disciplina) REFERENCES disciplina(id)
 ON DELETE CASCADE;

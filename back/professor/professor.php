@@ -1,6 +1,6 @@
 <?php
-header('Content-Type: application/json');
-include_once __DIR__ . '/../conexao.php';
+    
+    header('Content-Type: application/json');
     
     function buscarProfessor($parametro = 0){
         $sql = "SELECT * FROM professor";

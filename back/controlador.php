@@ -26,16 +26,11 @@ $acoes = [
     'excluirCurso'        => 'excluirCurso',
     'criarCurso'          => 'criarCurso',
 
-    'criarAula'       => 'criarAula',
-    'buscarAula'      => 'buscarAula',
-    'editarAula'      => 'editarAula',
-    'excluirAula'     => 'excluirAula',
-
-    'buscarSala'          => 'buscarSala',
-    'editarSala'          => 'editarSala',
-    'excluirSala'         => 'excluirSala',
-    'criarSala'           => 'criarSala',
-];
+        'buscarSala'     => 'buscarSala',
+        'editarSala'     => 'editarSala',
+        'excluirSala'    => 'excluirSala',
+        'criarSala'     => 'criarSala',
+    ];
 
 $resultado = "";
 
