@@ -78,6 +78,7 @@ $conn->close();
             flex-direction: column; 
             align-items: center;
             justify-content: flex-start;
+            background-color: #f4f4f9;
         }
 
         .login-button {
@@ -102,9 +103,13 @@ $conn->close();
         }
 
         #calendar {
-            width: 100%;
-            flex-grow: 1;
-            height: calc(100vh - 80px);
+            width: 80%; /* Reduzido para 80% da largura */
+            height: 80%; /* Reduzido para 80% da altura */
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para destaque */
+            background-color: #fff; /* Fundo branco */
+            border-radius: 8px; /* Bordas arredondadas */
+            padding: 10px; /* Espaçamento interno */
         }
 
         /* Estilos para o tooltip */
@@ -120,46 +125,46 @@ $conn->close();
         }
     </style>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var tooltipEl;
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var tooltipEl;
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          events: <?php echo $horario; ?>,
-          eventMouseEnter: function(info) {
-            var extendedProps = info.event.extendedProps;
-            var tooltipContent = 
-              "Disciplina: " + info.event.title + "<br>" +
-              "ID da Disciplina: " + extendedProps.id_disciplina + "<br>" +
-              "Professor: " + extendedProps.professor + "<br>" +
-              "Sala: " + extendedProps.sala;
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek', // Exibe a grade semanal
+                events: <?php echo $horario; ?>,
+                eventMouseEnter: function(info) {
+                    var extendedProps = info.event.extendedProps;
+                    var tooltipContent = 
+                        "Disciplina: " + info.event.title + "<br>" +
+                        "ID da Disciplina: " + extendedProps.id_disciplina + "<br>" +
+                        "Professor: " + extendedProps.professor + "<br>" +
+                        "Sala: " + extendedProps.sala;
 
-            tooltipEl = document.createElement('div');
-            tooltipEl.className = 'fc-event-tooltip';
-            tooltipEl.innerHTML = tooltipContent;
-            document.body.appendChild(tooltipEl);
+                    tooltipEl = document.createElement('div');
+                    tooltipEl.className = 'fc-event-tooltip';
+                    tooltipEl.innerHTML = tooltipContent;
+                    document.body.appendChild(tooltipEl);
 
-            var rect = info.el.getBoundingClientRect();
-            tooltipEl.style.top = rect.top + window.scrollY + "px";
-            tooltipEl.style.left = rect.left + window.scrollX + "px";
-          },
-          eventMouseLeave: function(info) {
-            if (tooltipEl) {
-              tooltipEl.remove();
-              tooltipEl = null;
-            }
-          },
-          eventMouseMove: function(info) {
-            if (tooltipEl) {
-              var rect = info.el.getBoundingClientRect();
-              tooltipEl.style.top = (rect.top + window.scrollY - tooltipEl.offsetHeight - 5) + "px";
-              tooltipEl.style.left = (rect.left + window.scrollX) + "px";
-            }
-          }
+                    var rect = info.el.getBoundingClientRect();
+                    tooltipEl.style.top = rect.top + window.scrollY + "px";
+                    tooltipEl.style.left = rect.left + window.scrollX + "px";
+                },
+                eventMouseLeave: function(info) {
+                    if (tooltipEl) {
+                        tooltipEl.remove();
+                        tooltipEl = null;
+                    }
+                },
+                eventMouseMove: function(info) {
+                    if (tooltipEl) {
+                        var rect = info.el.getBoundingClientRect();
+                        tooltipEl.style.top = (rect.top + window.scrollY - tooltipEl.offsetHeight - 5) + "px";
+                        tooltipEl.style.left = (rect.left + window.scrollX) + "px";
+                    }
+                }
+            });
+            calendar.render();
         });
-        calendar.render();
-      });
     </script>
 </head>
 <body>

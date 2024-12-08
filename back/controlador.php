@@ -29,6 +29,10 @@ $acoes = [
     'editarSala'          => 'editarSala',
     'excluirSala'         => 'excluirSala',
     'criarSala'           => 'criarSala',
+
+    'criarAula'           => 'criarAula',
+    'buscarAula'          => 'buscarAula',
+    
 ];
 
 $resultado = "";
