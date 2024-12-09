@@ -1,16 +1,19 @@
 <?php
 session_start();
+
+// Verifica se o usuário está autenticado
 if (!isset($_SESSION['usuario'])) {
     header('Location: login.php');
     exit();
 }
 
-// Obter dados dinâmicos para salas, professores e cursos
-$conn = new mysqli("localhost", "root", "Bunda4542@", "oferta");
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+// Incluir o arquivo de conexão
+require_once 'back/conexao.php'; // Ajuste o caminho conforme a estrutura do seu projeto
 
+// Conexão com o banco de dados
+$conn = conectarBanco();
+
+// Obter dados dinâmicos para salas, professores e cursos
 $salas = $conn->query("SELECT numero FROM sala")->fetch_all(MYSQLI_ASSOC);
 $professores = $conn->query("SELECT id, nome FROM professor")->fetch_all(MYSQLI_ASSOC);
 $cursos = $conn->query("SELECT id, nome FROM curso")->fetch_all(MYSQLI_ASSOC);
@@ -18,21 +21,22 @@ $conn->close();
 
 // Mensagem de feedback
 $mensagem = "";
-if (isset($_GET['status'])) {
-    if ($_GET['status'] === 'sucesso') {
-        $mensagem = "Disciplina cadastrada com sucesso!";
-    } elseif ($_GET['status'] === 'erro') {
-        $mensagem = "Erro ao cadastrar a disciplina. Verifique os dados.";
-    }
+$tipo_mensagem = "";
+if (isset($_GET['sucesso']) && $_GET['sucesso'] == 1) {
+    $mensagem = "Disciplina cadastrada com sucesso!";
+    $tipo_mensagem = "sucesso";
+} elseif (isset($_GET['erro']) && $_GET['erro'] == 1) {
+    $mensagem = "Erro ao cadastrar a disciplina. Verifique os dados.";
+    $tipo_mensagem = "erro";
 }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Disciplina</title>
     <style>
+        /* Seus estilos existentes */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -41,6 +45,7 @@ if (isset($_GET['status'])) {
         }
         .container {
             width: 40%;
+            max-width: 600px;
             margin: 50px auto;
             background-color: white;
             padding: 20px;
@@ -51,6 +56,23 @@ if (isset($_GET['status'])) {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
+        }
+        .feedback {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .feedback.sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
         form {
             display: flex;
@@ -64,7 +86,6 @@ if (isset($_GET['status'])) {
         input, select, button {
             padding: 12px;
             font-size: 1rem;
-            margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
             width: 100%;
@@ -74,7 +95,6 @@ if (isset($_GET['status'])) {
             background-color: #f9f9f9;
         }
         button {
-            padding: 12px;
             background-color: #4CAF50;
             color: white;
             cursor: pointer;
@@ -98,17 +118,6 @@ if (isset($_GET['status'])) {
         .back-link:hover {
             color: #4CAF50;
         }
-        .feedback {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-        }
-        .feedback.sucesso {
-            color: green;
-        }
-        .feedback.erro {
-            color: red;
-        }
         .header {
             width: 100%;
             background-color: #4CAF50;
@@ -129,7 +138,7 @@ if (isset($_GET['status'])) {
     <div class="container">
         <h2>Cadastrar Disciplina</h2>
         <?php if ($mensagem): ?>
-            <div class="feedback <?= $_GET['status'] === 'sucesso' ? 'sucesso' : 'erro' ?>">
+            <div class="feedback <?= $tipo_mensagem ?>">
                 <?= htmlspecialchars($mensagem); ?>
             </div>
         <?php endif; ?>
@@ -181,6 +190,5 @@ if (isset($_GET['status'])) {
         <a href="painel_admin.php" class="back-link">Voltar ao Painel ADM</a>
     </div>
 
-    
 </body>
 </html>

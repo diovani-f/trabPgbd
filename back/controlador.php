@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+// Habilitar relatórios de erro (apenas em desenvolvimento)
+// Descomente as linhas abaixo durante o desenvolvimento para ver erros detalhados
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 // Verifica se o usuário está autenticado
 if (!isset($_SESSION['usuario'])) {
     header('Location: ../login.php');
@@ -17,11 +23,11 @@ if ($isAjax) {
 }
 
 // Inclui as funções necessárias
-include_once 'conexao.php';
-include_once 'curso/curso.php';
-include_once 'disciplina/disciplina.php';
-include_once 'professor/professor.php';
-include_once 'sala/sala.php';
+require_once 'conexao.php';
+require_once 'curso/curso.php';
+require_once 'disciplina/disciplina.php';
+require_once 'professor/professor.php';
+require_once 'sala/sala.php';
 
 // Define as ações disponíveis
 $acoes = [
@@ -71,12 +77,11 @@ if ($isAjax) {
 } else {
     // Para requisições de formulário tradicionais
     if (isset($resultado['sucesso'])) {
-        // Redireciona para a página administrativa
-        header('Location: ../painel_admin.php');
+        // Redireciona para a página administrativa com parâmetro de sucesso
+        header('Location: ../painel_admin.php?sucesso=1');
         exit();
-    } else {
-        // Redireciona de volta para o formulário com um parâmetro de erro
-        // Identifica qual ação foi tentada
+    } else if (isset($resultado['erro'])) {
+        // Identifica qual ação foi tentada para redirecionar corretamente
         $action = '';
         foreach ($acoes as $chave => $funcao) {
             if (isset($_POST[$chave])) {
@@ -97,6 +102,7 @@ if ($isAjax) {
 
         if (array_key_exists($action, $actionToPage)) {
             $page = $actionToPage[$action];
+            // Adiciona a mensagem de erro como parâmetro na URL
             header("Location: ../{$page}?erro=1");
             exit();
         } else {
@@ -104,6 +110,10 @@ if ($isAjax) {
             header("Location: ../painel_admin.php?erro=1");
             exit();
         }
+    } else {
+        // Caso não haja resposta específica, redireciona para o painel administrativo
+        header("Location: ../painel_admin.php");
+        exit();
     }
 }
 ?>
