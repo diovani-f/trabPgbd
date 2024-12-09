@@ -185,6 +185,14 @@ $conn->close();
         var tooltipEl; // Armazena o elemento do tooltip
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'pt-br',
+            buttonText: {
+                today: 'Hoje',
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia',
+                list: 'Lista'
+            },
             initialView: 'timeGridWeek',
             events: <?php echo $horario; ?>,
             headerToolbar: {
