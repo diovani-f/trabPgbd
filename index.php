@@ -193,6 +193,7 @@ $conn->close();
                 day: 'Dia',
                 list: 'Lista'
             },
+            allDayText: 'Horas',
             initialView: 'timeGridWeek',
             events: <?php echo $horario; ?>,
             headerToolbar: {
