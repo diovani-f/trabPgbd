@@ -50,7 +50,7 @@
         if ($conn->query($sql)) {
             echo json_encode(["sucesso" => "Professor criado com sucesso"]);
         } else {
-            echo json_encode(["erro" => "Erro alllo criar professor: " . $conn->error]);
+            echo json_encode(["erro" => "Erro ao criar professor: " . $conn->error]);
         }
     
     
@@ -104,7 +104,7 @@
         $stmt->bind_param("i", $id);
     
         if ($stmt->execute()) {
-            echo json_encode(["sucesso" => "Professor exclu�do com sucesso"]);
+            echo json_encode(["sucesso" => "Professor excluído com sucesso"]);
         } else {
             echo json_encode(["erro" => "Erro ao excluir professor: " . $stmt->error]);
         }
