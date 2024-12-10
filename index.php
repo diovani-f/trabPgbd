@@ -173,7 +173,7 @@ $conn->close();
             <?php endforeach; ?>
         </select>
         <input type="text" name="nome_professor" placeholder="Nome do professor" value="<?= htmlspecialchars($nome_professor); ?>">
-        <input type="number" name="id_disciplina" placeholder="ID da disciplina" value="<?= htmlspecialchars($id_disciplina); ?>">
+        <input type="number" name="id_disciplina" placeholder="ID da disciplina" value="<?= ($id_disciplina); ?>">
         <input type="text" name="nome_disciplina" placeholder="Nome da disciplina" value="<?= htmlspecialchars($nome_disciplina); ?>">
         <button type="submit">Filtrar</button>
     </form>

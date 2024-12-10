@@ -3,7 +3,7 @@
 
 $servername = "localhost";
 $username = "root";
-$password = "@";
+$password = "";
 $dbname = "oferta";
 
 function conectarBanco() {

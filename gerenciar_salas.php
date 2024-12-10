@@ -171,8 +171,8 @@ $conn->close();
 <div class="container">
     <h2>Gerenciar Salas</h2>
     <form class="filters" method="GET" action="">
-        <input type="number" name="numero_sala" placeholder="Número da sala" value="<?= htmlspecialchars($numero_sala); ?>">
-        <input type="number" name="capacidade" placeholder="Capacidade mínima" value="<?= htmlspecialchars($capacidade); ?>">
+        <input type="number" name="numero_sala" placeholder="Número da sala" value="<?= ($numero_sala); ?>">
+        <input type="number" name="capacidade" placeholder="Capacidade mínima" value="<?= ($capacidade); ?>">
         <button type="submit">Filtrar</button>
     </form>
 
