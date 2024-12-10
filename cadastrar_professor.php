@@ -136,30 +136,3 @@ if (!isset($_SESSION['usuario'])) {
 
 </body>
 </html>
-
-<script>
-    document.querySelector('form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevenir envio padrão do formulário
-
-        const formData = new FormData(this);
-        const url = this.action;
-
-        fetch(url, {
-            method: 'POST',
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.erro) {
-                alert(data.erro); // Exibir erro como alerta
-            } else if (data.sucesso) {
-                alert(data.sucesso); // Exibir sucesso como alerta
-                window.location.href = 'painel_admin.php'; // Redirecionar ao painel
-            }
-        })
-        .catch(error => {
-            console.error('Erro na solicitação:', error);
-        });
-    });
-</script>
-
