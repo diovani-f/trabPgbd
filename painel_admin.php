@@ -82,7 +82,7 @@ if (!isset($_SESSION['usuario'])) {
             <a href="gerenciar_disciplinas.php" class="menu-item">Gerenciar Disciplinas</a>
             <a href="gerenciar_professores.php" class="menu-item">Gerenciar Professores</a>
             <a href="gerenciar_cursos.php" class="menu-item">Gerenciar Cursos</a>
-            <a href="gerenciar_coordenadores.php" class="menu-item">Gerenciar Coordenadores</a>
+            <!-- <a href="gerenciar_coordenadores.php" class="menu-item">Gerenciar Coordenadores</a> -->
             <a href="gerenciar_salas.php" class="menu-item">Gerenciar Salas</a>
             <a href="gerenciar_aulas.php" class="menu-item">Gerenciar Aulas</a>
             <a href="historico_disciplinas.php" class="menu-item">Histórico de Disciplinas</a>

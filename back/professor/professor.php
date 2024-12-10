@@ -36,7 +36,6 @@
             return;
         }
     
-        file_put_contents('1.txt', print_r("aa", true) . PHP_EOL, FILE_APPEND);
     
         $conn = conectarBanco();
         
@@ -51,10 +50,9 @@
         if ($conn->query($sql)) {
             echo json_encode(["sucesso" => "Professor criado com sucesso"]);
         } else {
-            echo json_encode(["erro" => "Erro alllo criar professor: " . $conn->error]);
+            echo json_encode(["erro" => "Erro ao criar professor: " . $conn->error]);
         }
     
-        file_put_contents('3.txt', print_r(3, true) . PHP_EOL, FILE_APPEND);
     
         $conn->close();
     }
@@ -78,7 +76,6 @@
     
         if ($resultCoordenador->num_rows > 0) {
             echo json_encode(["erro" => "O professor não pode ser excluído porque é coordenador de um curso."]);
-            file_put_contents('teste.txt',print_r(json_encode(["erro" => "O professor não pode ser excluido porque é coordenador de um curso."]), true) . PHP_EOL ,FILE_APPEND);
             $stmtCoordenador->close();
             $conn->close();
             return;
@@ -107,7 +104,7 @@
         $stmt->bind_param("i", $id);
     
         if ($stmt->execute()) {
-            echo json_encode(["sucesso" => "Professor exclu�do com sucesso"]);
+            echo json_encode(["sucesso" => "Professor excluído com sucesso"]);
         } else {
             echo json_encode(["erro" => "Erro ao excluir professor: " . $stmt->error]);
         }

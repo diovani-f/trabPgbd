@@ -23,24 +23,47 @@ function criarCurso($parametro) {
     $id_coordenador = $parametro['id_coordenador'] ?? null;
 
     if (empty($nome) || empty($id_coordenador)) {
-        echo json_encode(["erro" => "Nome e coordenador são obrigatórios"]);
-        return;
+        header("Location: ../cadastrar_curso.php?status=erro&mensagem=Nome+do+curso+e+ID+do+coordenador+são+obrigatórios.");
+        exit();
     }
 
     $conn = conectarBanco();
+
+    // Verificar se o coordenador já está associado a outro curso
+    $sqlVerifica = "SELECT id FROM curso WHERE id_coordenador = ?";
+    $stmtVerifica = $conn->prepare($sqlVerifica);
+    $stmtVerifica->bind_param("i", $id_coordenador);
+    $stmtVerifica->execute();
+    $stmtVerifica->store_result();
+
+    if ($stmtVerifica->num_rows > 0) {
+        $stmtVerifica->close();
+        $conn->close();
+        header("Location: ../cadastrar_curso.php?status=erro&mensagem=O+coordenador+já+está+associado+a+outro+curso.");
+        exit();
+    }
+
+    $stmtVerifica->close();
+
+    // Inserir o curso se o coordenador não estiver associado
     $sql = "INSERT INTO curso (nome, id_coordenador) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $nome, $id_coordenador);
 
     if ($stmt->execute()) {
-        echo json_encode(["sucesso" => "Curso criado com sucesso"]);
+        $stmt->close();
+        $conn->close();
+        header("Location: ../cadastrar_curso.php?status=sucesso&mensagem=Curso+criado+com+sucesso.");
+        exit();
     } else {
-        echo json_encode(["erro" => "Erro ao criar curso: " . $stmt->error]);
+        $erro = $stmt->error;
+        $stmt->close();
+        $conn->close();
+        header("Location: ../cadastrar_curso.php?status=erro&mensagem=Erro+ao+criar+curso%3A+" . urlencode($erro));
+        exit();
     }
-
-    $stmt->close();
-    $conn->close();
 }
+
 
 function editarCurso($parametro) {
     $id = $parametro["id_curso"] ?? null;
@@ -48,24 +71,48 @@ function editarCurso($parametro) {
     $id_coordenador = $parametro["id_coordenador"] ?? null;
 
     if (empty($id) || empty($nome) || empty($id_coordenador)) {
-        echo json_encode(["erro" => "ID, nome e coordenador são obrigatórios"]);
-        return;
+        header("Location: ../editar_curso.php?id=$id&status=erro&mensagem=ID%2C+nome+e+coordenador+são+obrigatórios.");
+        exit();
     }
 
     $conn = conectarBanco();
+
+    // Verificar se o coordenador já está associado a outro curso
+    $sqlVerifica = "SELECT id FROM curso WHERE id_coordenador = ? AND id != ?";
+    $stmtVerifica = $conn->prepare($sqlVerifica);
+    $stmtVerifica->bind_param("ii", $id_coordenador, $id); // Ignora o próprio curso na comparação
+    $stmtVerifica->execute();
+    $stmtVerifica->store_result();
+
+    if ($stmtVerifica->num_rows > 0) {
+        // Coordenador já está associado a outro curso
+        $stmtVerifica->close();
+        $conn->close();
+        header("Location: ../editar_curso.php?id=$id&status=erro&mensagem=O+coordenador+já+está+associado+a+outro+curso.");
+        exit();
+    }
+
+    $stmtVerifica->close();
+
+    // Atualizar o curso se o coordenador não estiver associado a outro curso
     $sql = "UPDATE curso SET nome = ?, id_coordenador = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sii", $nome, $id_coordenador, $id);
 
     if ($stmt->execute()) {
-        echo json_encode(["sucesso" => "Curso editado com sucesso"]);
+        $stmt->close();
+        $conn->close();
+        header("Location: ../editar_curso.php?id=$id&status=sucesso&mensagem=Curso+editado+com+sucesso.");
+        exit();
     } else {
-        echo json_encode(["erro" => "Erro ao editar curso: " . $stmt->error]);
+        $erro = $stmt->error;
+        $stmt->close();
+        $conn->close();
+        header("Location: ../editar_curso.php?id=$id&status=erro&mensagem=Erro+ao+editar+curso%3A+" . urlencode($erro));
+        exit();
     }
-
-    $stmt->close();
-    $conn->close();
 }
+
 
 function excluirCurso($parametro) {
     $id = $parametro["id_curso"] ?? null;

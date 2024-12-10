@@ -207,3 +207,16 @@ $conn->close();
 </div>
 </body>
 </html>
+<script>
+    // Função para obter os parâmetros da URL
+    function getUrlParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Verificar se há uma mensagem na URL
+    const mensagem = getUrlParameter('mensagem');
+    if (mensagem) {
+        alert(decodeURIComponent(mensagem)); // Exibe o pop-up com a mensagem de erro
+    }
+</script>

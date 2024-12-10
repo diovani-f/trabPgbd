@@ -171,8 +171,8 @@ $conn->close();
 <div class="container">
     <h2>Gerenciar Salas</h2>
     <form class="filters" method="GET" action="">
-        <input type="number" name="numero_sala" placeholder="Número da sala" value="<?= htmlspecialchars($numero_sala); ?>">
-        <input type="number" name="capacidade" placeholder="Capacidade mínima" value="<?= htmlspecialchars($capacidade); ?>">
+        <input type="number" name="numero_sala" placeholder="Número da sala" value="<?= ($numero_sala); ?>">
+        <input type="number" name="capacidade" placeholder="Capacidade mínima" value="<?= ($capacidade); ?>">
         <button type="submit">Filtrar</button>
     </form>
 
@@ -209,3 +209,19 @@ $conn->close();
 </div>
 </body>
 </html>
+<script>
+        // Função para exibir o alert com a mensagem da URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const mensagem = urlParams.get('mensagem');
+
+            if (status && mensagem) {
+                if (status === 'sucesso') {
+                    alert('Sucesso: ' + decodeURIComponent(mensagem));
+                } else if (status === 'erro') {
+                    alert('Erro: ' + decodeURIComponent(mensagem));
+                }
+            }
+        }
+    </script>
