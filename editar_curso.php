@@ -5,6 +5,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
+
 // Conexão com o banco de dados
 include_once 'back/conexao.php';
 $conn = conectarBanco();
@@ -127,3 +128,19 @@ $conn->close();
 
 </body>
 </html>
+<script>
+        // Função para exibir o alert com a mensagem da URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const mensagem = urlParams.get('mensagem');
+
+            if (status && mensagem) {
+                if (status === 'sucesso') {
+                    alert('Sucesso: ' + decodeURIComponent(mensagem));
+                } else if (status === 'erro') {
+                    alert('Erro: ' + decodeURIComponent(mensagem));
+                }
+            }
+        }
+    </script>
