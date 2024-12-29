@@ -176,6 +176,7 @@ $conn->close();
         <input type="number" name="id_disciplina" placeholder="ID da disciplina" value="<?= ($id_disciplina); ?>">
         <input type="text" name="nome_disciplina" placeholder="Nome da disciplina" value="<?= htmlspecialchars($nome_disciplina); ?>">
         <button type="submit">Filtrar</button>
+        <button type="button" onclick="window.location.href='painel_admin.php'">Logar</button>
     </form>
     <div id="calendar"></div>
 
